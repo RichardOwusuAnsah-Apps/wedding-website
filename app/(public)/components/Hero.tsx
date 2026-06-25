@@ -2,7 +2,7 @@ import { Monogram } from "@/components/ui/Monogram";
 import { Countdown } from "@/components/ui/Countdown";
 
 /** Hero — monogram, tagline, names, date/location, live countdown. */
-export function Hero() {
+export function Hero({ targetIso }: { targetIso?: string }) {
   return (
     <section className="hero" id="top">
       <Monogram className="reveal" />
@@ -22,7 +22,7 @@ export function Hero() {
         <i />
         <span>Maryland, USA</span>
       </div>
-      <Countdown className="reveal" />
+      <Countdown className="reveal" targetIso={targetIso} />
       <div className="scrollcue">Scroll ↓</div>
     </section>
   );
