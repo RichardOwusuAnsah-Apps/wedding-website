@@ -78,7 +78,12 @@ export default async function Home() {
 
   return (
     <>
-      <Hero targetIso={weddingDate} />
+      <Hero
+        coupleNames={settings.couple_names || "Richie & Shula"}
+        tagline={settings.tagline || "Timeless · Elegant · Effortless"}
+        location={settings.hero_location || "Maryland, USA"}
+        targetIso={weddingDate}
+      />
 
       <Story chapters={chapters} />
       <ThreadDivider className="reveal" />
