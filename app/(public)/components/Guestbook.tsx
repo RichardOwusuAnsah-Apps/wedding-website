@@ -1,5 +1,6 @@
 import { SectionHead } from "@/components/ui/SectionHead";
 import type { GuestbookEntry } from "@/lib/types";
+import { GuestbookForm } from "./GuestbookForm";
 
 export function Guestbook({ wishes }: { wishes: GuestbookEntry[] }) {
   return (
@@ -24,12 +25,7 @@ export function Guestbook({ wishes }: { wishes: GuestbookEntry[] }) {
           </div>
         )}
 
-        {/* Submission form is wired in Phase 4 (public writes). */}
-        <div className="center" style={{ marginTop: 30 }}>
-          <button className="nav-rsvp reveal" type="button" disabled>
-            Sign the guestbook
-          </button>
-        </div>
+        <GuestbookForm />
       </div>
     </section>
   );
