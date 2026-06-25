@@ -1,26 +1,91 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  Design system — ported from docs/wedding-website-mockup.html
+  Tailwind v4: tokens declared in @theme generate utilities
+  (e.g. --color-burgundy -> bg-burgundy/text-burgundy/border-burgundy,
+        --font-display   -> font-display).
+*/
+@theme {
+  /* ---- palette ---- */
+  --color-burgundy: #5a1b2e;
+  --color-burgundy-deep: #3f121f;
+  --color-teal: #0e5a5e;
+  --color-teal-deep: #093e42;
+  --color-gold: #c49a48;
+  --color-gold-light: #e2c588;
+  --color-ivory: #f8f3ea;
+  --color-sand: #efe5d3;
+  --color-ink: #241a1c;
+  --color-muted: #7a6a64;
+
+  /* hairline rule used throughout the mockup: rgba(burgundy, .16) */
+  --color-line: rgba(90, 27, 46, 0.16);
+
+  /* shared layout width */
+  --spacing-wrap: 1180px;
 }
 
+/*
+  @theme inline so the font tokens resolve to the runtime CSS variables
+  injected by next/font (see app/layout.tsx).
+*/
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-cormorant), Georgia, serif;
+  --font-body: var(--font-eb-garamond), Georgia, serif;
+  --font-util: var(--font-jost), system-ui, sans-serif;
+  --font-script: var(--font-tangerine), cursive;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+  body {
+    background: var(--color-ivory);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.08;
+  }
+  /* Keyboard focus floor (quality bar from the plan) */
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* page gutter wrapper — matches .wrap in the mockup */
+  .wrap {
+    max-width: var(--spacing-wrap);
+    margin-inline: auto;
+    padding-inline: 28px;
+  }
+
+  /* small letter-spaced uppercase label — matches .eyebrow */
+  .eyebrow {
+    font-family: var(--font-util);
+    font-weight: 500;
+    font-size: 0.72rem;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    display: inline-block;
+  }
 }
