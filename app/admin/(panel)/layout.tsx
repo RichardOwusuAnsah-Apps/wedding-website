@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { AdminNav } from "@/components/admin/AdminNav";
 
 async function signOut() {
   "use server";
@@ -53,9 +54,14 @@ export default async function AdminPanelLayout({
         </div>
       </header>
 
-      <main className="flex-1 px-7 py-10 max-w-5xl w-full mx-auto">
-        {children}
-      </main>
+      <div className="flex flex-1 w-full">
+        <aside className="hidden md:block w-56 shrink-0 border-r border-line bg-white/60 px-4 py-7">
+          <AdminNav />
+        </aside>
+        <main className="flex-1 px-7 py-10 max-w-5xl w-full mx-auto min-w-0">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

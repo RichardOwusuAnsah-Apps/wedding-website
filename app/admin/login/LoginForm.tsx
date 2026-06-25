@@ -38,7 +38,7 @@ export function LoginForm({ redirectTo }: { redirectTo: string }) {
       onSubmit={onSubmit}
       className="w-full max-w-sm bg-white border border-line rounded-md p-10 text-center"
     >
-      <Monogram className="!mx-auto" />
+      <Monogram className="mx-auto" />
       <h1 className="font-display text-3xl text-burgundy mb-1">Admin</h1>
       <p className="font-util text-[0.7rem] tracking-[0.18em] uppercase text-muted mb-7">
         Richie &amp; Shula
