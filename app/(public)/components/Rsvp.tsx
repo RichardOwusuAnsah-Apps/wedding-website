@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { SectionHead } from "@/components/ui/SectionHead";
-import { createClient } from "@/lib/supabase/client";
 
 type Attending = "yes" | "no";
 type Which = "traditional" | "white" | "both";
@@ -30,23 +29,25 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
     setStatus("submitting");
     setError("");
 
-    const supabase = createClient();
-    const { error: insertError } = await supabase.from("rsvps").insert({
-      full_name: fullName.trim(),
-      email: email.trim() || null,
-      attending: attending === "yes",
-      events_attending: which,
-      party_size: partySize,
-      meal_preference: meal,
-    });
-
-    if (insertError) {
-      console.error("[rsvp]", insertError.message);
+    try {
+      const res = await fetch("/api/rsvp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: fullName.trim(),
+          email: email.trim() || null,
+          attending: attending === "yes",
+          events_attending: which,
+          party_size: partySize,
+          meal_preference: meal,
+        }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      setDone(true);
+    } catch {
       setStatus("error");
       setError("Something went wrong. Please try again.");
-      return;
     }
-    setDone(true);
   }
 
   return (
