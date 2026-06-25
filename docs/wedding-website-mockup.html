@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Richie &amp; Shula — Our Wedding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=EB+Garamond:ital@0;1&family=Jost:wght@300;400;500;600&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --burgundy:#5A1B2E;
+    --burgundy-deep:#3F121F;
+    --teal:#0E5A5E;
+    --teal-deep:#093E42;
+    --gold:#C49A48;
+    --gold-light:#E2C588;
+    --ivory:#F8F3EA;
+    --sand:#EFE5D3;
+    --ink:#241A1C;
+    --muted:#7A6A64;
+    --line:rgba(90,27,46,.16);
+    --disp:'Cormorant Garamond', Georgia, serif;
+    --body:'EB Garamond', Georgia, serif;
+    --util:'Jost', system-ui, sans-serif;
+    --script:'Tangerine', cursive;
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{
+    margin:0;background:var(--ivory);color:var(--ink);
+    font-family:var(--body);font-size:18px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  h1,h2,h3,h4{font-family:var(--disp);font-weight:500;margin:0;line-height:1.08}
+  p{margin:0 0 1em}
+  a{color:inherit;text-decoration:none}
+  .eyebrow{
+    font-family:var(--util);font-weight:500;font-size:.72rem;
+    letter-spacing:.38em;text-transform:uppercase;color:var(--gold);
+    display:inline-block;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  section{padding:104px 0;position:relative}
+  .center{text-align:center}
+
+  /* ---- woven gold thread divider ---- */
+  .thread{
+    height:24px;display:flex;align-items:center;justify-content:center;gap:14px;
+    margin:0 auto;max-width:340px;
+  }
+  .thread::before,.thread::after{
+    content:"";height:1px;flex:1;
+    background:linear-gradient(90deg,transparent,var(--gold));
+  }
+  .thread::after{background:linear-gradient(90deg,var(--gold),transparent)}
+  .thread span{
+    width:9px;height:9px;transform:rotate(45deg);
+    background:var(--gold);box-shadow:0 0 0 4px var(--ivory),0 0 0 5px var(--line);
+  }
+
+  /* ---- nav ---- */
+  header.nav{
+    position:fixed;top:0;left:0;right:0;z-index:60;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 28px;transition:.4s ease;
+  }
+  header.nav.scrolled{
+    background:rgba(248,243,234,.92);backdrop-filter:blur(10px);
+    box-shadow:0 1px 0 var(--line);padding:12px 28px;
+  }
+  .brand{font-family:var(--disp);font-size:1.45rem;letter-spacing:.04em;color:var(--burgundy);
+    display:flex;align-items:center;gap:.5rem}
+  .brand b{color:var(--gold);font-weight:500}
+  nav.links{display:flex;gap:26px}
+  nav.links a{font-family:var(--util);font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);opacity:.78;transition:.25s}
+  nav.links a:hover{opacity:1;color:var(--burgundy)}
+  .nav-rsvp{
+    font-family:var(--util);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+    border:1px solid var(--gold);color:var(--burgundy);padding:9px 18px;border-radius:2px;transition:.3s
+  }
+  .nav-rsvp:hover{background:var(--gold);color:#fff}
+  .burger{display:none;background:none;border:0;cursor:pointer;flex-direction:column;gap:5px}
+  .burger span{width:24px;height:2px;background:var(--burgundy);display:block}
+
+  /* ---- hero ---- */
+  .hero{
+    min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:120px 24px 60px;position:relative;
+    background:
+      radial-gradient(120% 90% at 50% -10%, rgba(196,154,72,.12), transparent 60%),
+      linear-gradient(180deg,#fbf7ef,var(--ivory));
+  }
+  .hero::after{
+    content:"";position:absolute;inset:22px;border:1px solid var(--line);pointer-events:none;
+  }
+  .monogram{
+    width:108px;height:108px;border-radius:50%;border:1px solid var(--gold);
+    display:flex;align-items:center;justify-content:center;margin-bottom:30px;
+    font-family:var(--disp);color:var(--burgundy);font-size:2rem;letter-spacing:.02em;
+    position:relative;background:rgba(255,255,255,.4);
+  }
+  .monogram small{font-size:1rem;color:var(--gold);margin:0 4px}
+  .monogram .rs{font-family:var(--script);font-size:3.6rem;letter-spacing:-.06em;line-height:1;color:var(--burgundy)}
+  .hero .script{font-family:var(--script);font-size:2.6rem;color:var(--teal);line-height:1;margin-bottom:.2em}
+  .hero h1{
+    font-size:clamp(3.4rem,11vw,7.2rem);color:var(--burgundy);font-weight:600;letter-spacing:.01em;
+  }
+  .hero h1 .amp{font-family:var(--disp);font-style:italic;color:var(--gold);font-weight:400;display:inline-block;padding:0 .15em}
+  .hero .meta{
+    font-family:var(--util);letter-spacing:.32em;text-transform:uppercase;font-size:.84rem;
+    color:var(--ink);margin-top:22px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center
+  }
+  .hero .meta i{width:5px;height:5px;background:var(--gold);transform:rotate(45deg);font-style:normal}
+
+  /* ---- countdown ---- */
+  .countdown{display:flex;gap:34px;margin-top:46px;flex-wrap:wrap;justify-content:center}
+  .cd{min-width:74px}
+  .cd b{display:block;font-family:var(--disp);font-size:2.8rem;color:var(--teal);font-weight:600;line-height:1}
+  .cd span{font-family:var(--util);font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted)}
+  .scrollcue{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);font-family:var(--util);font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+
+  /* ---- section headings ---- */
+  .sec-head{text-align:center;max-width:680px;margin:0 auto 56px}
+  .sec-head h2{font-size:clamp(2.4rem,5vw,3.6rem);color:var(--burgundy);margin:.25em 0 .35em}
+  .sec-head p{color:var(--muted);font-size:1.18rem}
+
+  /* ---- story timeline ---- */
+  .story{background:linear-gradient(180deg,var(--ivory),#fbf7ef)}
+  .timeline{max-width:760px;margin:0 auto;position:relative;padding-left:46px}
+  .timeline::before{content:"";position:absolute;left:14px;top:6px;bottom:6px;width:2px;
+    background:linear-gradient(180deg,var(--gold-light),var(--gold),var(--gold-light))}
+  .chapter{position:relative;margin-bottom:48px}
+  .chapter::before{content:"";position:absolute;left:-39px;top:7px;width:13px;height:13px;border-radius:50%;
+    background:var(--ivory);border:2px solid var(--gold)}
+  .chapter .yr{font-family:var(--util);font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--teal)}
+  .chapter h3{font-size:1.9rem;color:var(--burgundy);margin:.1em 0 .3em}
+  .chapter p{color:var(--ink);opacity:.86}
+
+  /* ---- celebrations ---- */
+  .cele-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;max-width:980px;margin:0 auto}
+  .cele{padding:46px 38px;border-radius:4px;position:relative;overflow:hidden;color:#fff}
+  .cele.trad{background:linear-gradient(160deg,var(--burgundy),var(--burgundy-deep))}
+  .cele.white{background:linear-gradient(160deg,var(--teal),var(--teal-deep))}
+  .cele .tag{font-family:var(--util);font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-light)}
+  .cele h3{font-size:2.3rem;margin:.3em 0;color:#fff}
+  .cele .det{font-family:var(--util);font-size:.86rem;letter-spacing:.04em;opacity:.9;display:flex;flex-direction:column;gap:7px;margin-top:18px}
+  .cele .det div{display:flex;gap:10px;align-items:baseline}
+  .cele .det b{color:var(--gold-light);font-weight:500;min-width:64px;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase}
+  .cele .ornament{position:absolute;right:-30px;top:-30px;width:140px;height:140px;border:1px solid rgba(255,255,255,.18);border-radius:50%}
+  .cele .ornament::after{content:"";position:absolute;inset:22px;border:1px solid rgba(255,255,255,.12);border-radius:50%}
+
+  /* ---- wedding party ---- */
+  .party-tabs{display:flex;gap:10px;justify-content:center;margin-bottom:46px;flex-wrap:wrap}
+  .ptab{font-family:var(--util);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;
+    padding:11px 22px;border:1px solid var(--line);border-radius:2px;cursor:pointer;background:none;color:var(--ink);transition:.25s}
+  .ptab.active{background:var(--burgundy);color:#fff;border-color:var(--burgundy)}
+  .party-group{display:none}
+  .party-group.show{display:block;animation:fade .5s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .party-group h3{text-align:center;font-size:1.7rem;color:var(--teal);margin-bottom:6px}
+  .party-group .gsub{text-align:center;color:var(--muted);font-family:var(--util);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:34px}
+  .people{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+  .person{text-align:center}
+  .portrait{aspect-ratio:3/4;border-radius:4px;background:linear-gradient(160deg,var(--sand),#e3d5bd);
+    display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:2.2rem;color:var(--burgundy);
+    border:1px solid var(--line);position:relative;overflow:hidden}
+  .portrait::after{content:"";position:absolute;inset:8px;border:1px solid rgba(196,154,72,.5)}
+  .person p{margin:14px 0 0;font-family:var(--disp);font-size:1.25rem;color:var(--burgundy)}
+  .person span{font-family:var(--util);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+  .uploadtile{aspect-ratio:3/4;border-radius:4px;border:1.5px dashed var(--gold);background:rgba(196,154,72,.06);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:.25s;color:var(--burgundy)}
+  .uploadtile:hover{background:rgba(196,154,72,.14)}
+  .uploadtile .plus{width:42px;height:42px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+  .uploadtile small{font-family:var(--util);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase}
+
+  /* ---- gallery ---- */
+  .gallery{background:linear-gradient(180deg,#fbf7ef,var(--ivory))}
+  .grid-photos{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .ph{aspect-ratio:1;border-radius:3px;background:linear-gradient(135deg,var(--sand),#e6d7be);position:relative;overflow:hidden}
+  .ph:nth-child(3n){background:linear-gradient(135deg,#e7d8c0,var(--sand))}
+  .ph.tall{grid-row:span 2;aspect-ratio:1/2}
+  .ph::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.4),transparent 60%)}
+  .ph .lbl{position:absolute;bottom:10px;left:12px;font-family:var(--script);font-size:1.5rem;color:var(--burgundy);opacity:.55;z-index:2}
+
+  /* ---- venues / hotels cards ---- */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:5px;overflow:hidden;transition:.3s}
+  .card:hover{transform:translateY(-4px);box-shadow:0 18px 40px -24px rgba(90,27,46,.4)}
+  .card .map{height:150px;background:
+      repeating-linear-gradient(45deg,rgba(14,90,94,.07) 0 12px,transparent 12px 24px),
+      linear-gradient(160deg,#dfeceb,#eef3ee);position:relative}
+  .card .map::after{content:"📍";position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);font-size:1.6rem}
+  .card .body{padding:22px 24px}
+  .card h4{font-size:1.5rem;color:var(--burgundy);margin-bottom:4px}
+  .card .role{font-family:var(--util);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--teal)}
+  .card p{font-size:.98rem;color:var(--muted);margin:10px 0 0}
+  .card .link{display:inline-block;margin-top:14px;font-family:var(--util);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--gold);padding-bottom:2px}
+
+  /* ---- family ---- */
+  .fam-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;max-width:900px;margin:0 auto}
+  .fam{background:#fff;border:1px solid var(--line);border-radius:5px;padding:34px 36px;text-align:center}
+  .fam .tag{font-family:var(--util);font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold)}
+  .fam h4{font-size:1.7rem;color:var(--burgundy);margin:.3em 0}
+  .fam ul{list-style:none;padding:0;margin:14px 0 0;color:var(--ink);opacity:.85}
+  .fam li{padding:5px 0;border-top:1px solid var(--line)}
+  .fam li:first-child{border-top:0}
+
+  /* ---- vendors ---- */
+  .vend{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .vcard{background:#fff;border:1px solid var(--line);border-radius:4px;padding:24px 20px;text-align:center}
+  .vcard span{font-family:var(--util);font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--teal)}
+  .vcard h4{font-size:1.3rem;color:var(--burgundy);margin-top:8px}
+
+  /* ---- dress / palette ---- */
+  .palette{background:linear-gradient(160deg,var(--burgundy),var(--burgundy-deep));color:#fff}
+  .palette .sec-head h2,.palette .sec-head p{color:#fff}
+  .palette .sec-head p{opacity:.82}
+  .swatches{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+  .dress-cols{display:grid;grid-template-columns:1fr 1fr;gap:30px;max-width:860px;margin:0 auto}
+  .dress-col{text-align:center;padding:30px 20px;border:1px solid rgba(255,255,255,.18);border-radius:5px;background:rgba(255,255,255,.04)}
+  .dress-col h3{color:#fff;font-size:1.7rem}
+  .dress-col .dc-sub{display:block;font-family:var(--util);font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-light);margin:6px 0 16px}
+  .dress-col .chip{width:68px;height:68px}
+  .dress-col .swatches{gap:16px}
+  .sw{text-align:center}
+  .sw .chip{width:96px;height:96px;border-radius:50%;border:2px solid rgba(255,255,255,.4);margin:0 auto 12px}
+  .sw small{font-family:var(--util);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-light)}
+
+  /* ---- rsvp ---- */
+  .rsvp-box{max-width:620px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:6px;padding:46px 44px}
+  .field{margin-bottom:22px}
+  .field label{display:block;font-family:var(--util);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .field input,.field select{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:3px;font-family:var(--body);font-size:1.02rem;background:var(--ivory);color:var(--ink)}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--gold)}
+  .seg{display:flex;gap:10px}
+  .seg button{flex:1;padding:12px;border:1px solid var(--line);background:var(--ivory);border-radius:3px;font-family:var(--util);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;color:var(--ink);transition:.2s}
+  .seg button.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+  .btn-gold{width:100%;padding:15px;background:var(--gold);color:#fff;border:0;border-radius:3px;font-family:var(--util);font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:.3s}
+  .btn-gold:hover{background:var(--burgundy)}
+
+  /* ---- registry ---- */
+  .reg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .reg{background:#fff;border:1px solid var(--line);border-radius:5px;padding:32px;text-align:center}
+  .reg .ic{font-size:2rem;margin-bottom:12px}
+  .reg h4{font-size:1.4rem;color:var(--burgundy)}
+  .reg p{color:var(--muted);font-size:.96rem}
+
+  /* ---- after / locked gallery ---- */
+  .after{background:linear-gradient(160deg,var(--teal),var(--teal-deep));color:#fff;text-align:center}
+  .after .sec-head h2,.after .sec-head p{color:#fff}
+  .after .sec-head p{opacity:.85}
+  .after-up{display:inline-flex;align-items:center;gap:12px;margin-top:8px;background:rgba(255,255,255,.1);border:1px dashed var(--gold-light);padding:18px 28px;border-radius:4px;cursor:pointer;color:#fff;font-family:var(--util);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase}
+
+  /* ---- guestbook ---- */
+  .wishes{columns:2;column-gap:24px;max-width:920px;margin:0 auto}
+  .wish{break-inside:avoid;background:#fff;border:1px solid var(--line);border-radius:5px;padding:24px 26px;margin-bottom:24px}
+  .wish p{font-style:italic;color:var(--ink);opacity:.9}
+  .wish span{font-family:var(--util);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+
+  /* ---- faq ---- */
+  .faq{max-width:760px;margin:0 auto}
+  .q{border-bottom:1px solid var(--line);padding:22px 0;cursor:pointer}
+  .q h4{font-size:1.4rem;color:var(--burgundy);display:flex;justify-content:space-between;align-items:center}
+  .q h4::after{content:"+";color:var(--gold);font-family:var(--util);font-weight:300}
+  .q.open h4::after{content:"–"}
+  .q .a{max-height:0;overflow:hidden;transition:.35s ease;color:var(--muted)}
+  .q.open .a{max-height:200px;margin-top:12px}
+
+  /* ---- footer ---- */
+  footer{background:var(--burgundy-deep);color:#fff;text-align:center;padding:80px 24px 50px}
+  footer .monogram{margin:0 auto 22px;border-color:var(--gold-light);color:#fff}
+  footer .script{font-family:var(--script);font-size:2.4rem;color:var(--gold-light)}
+  footer .meta{font-family:var(--util);font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;opacity:.7;margin-top:14px}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(26px);transition:.7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+  /* responsive */
+  @media(max-width:900px){
+    nav.links{display:none}
+    .burger{display:flex}
+    .cele-grid,.fam-grid,.cards,.reg-grid,.dress-cols{grid-template-columns:1fr}
+    .people,.vend{grid-template-columns:1fr 1fr}
+    .grid-photos{grid-template-columns:1fr 1fr}
+    .wishes{columns:1}
+    section{padding:74px 0}
+  }
+  @media(max-width:560px){
+    body{font-size:17px}
+    .hero h1{font-size:clamp(3rem,16vw,5rem)}
+    .countdown{gap:20px}
+    .people{grid-template-columns:1fr 1fr}
+    .rsvp-box{padding:32px 22px}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="brand">R <b>&amp;</b> S</div>
+  <nav class="links">
+    <a href="#story">Our Story</a>
+    <a href="#celebrations">Celebrations</a>
+    <a href="#party">Wedding Party</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#travel">Travel</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <a href="#rsvp" class="nav-rsvp">RSVP</a>
+  <button class="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="monogram reveal"><span class="rs">RS</span></div>
+  <div class="eyebrow reveal" style="font-size:.78rem;letter-spacing:.4em;color:var(--teal)">Timeless · Elegant · Effortless</div>
+  <h1 class="reveal">Richie<span class="amp">&amp;</span>Shula</h1>
+  <div class="meta reveal">
+    <span>Saturday</span><i></i><span>24 October 2026</span><i></i><span>Maryland, USA</span>
+  </div>
+  <div class="countdown reveal" id="countdown">
+    <div class="cd"><b id="cd-d">—</b><span>Days</span></div>
+    <div class="cd"><b id="cd-h">—</b><span>Hours</span></div>
+    <div class="cd"><b id="cd-m">—</b><span>Minutes</span></div>
+    <div class="cd"><b id="cd-s">—</b><span>Seconds</span></div>
+  </div>
+  <div class="scrollcue">Scroll ↓</div>
+</section>
+
+<!-- STORY -->
+<section class="story" id="story">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">How it began</span>
+      <h2>Our Story</h2>
+      <p>Two paths, one beautiful destination. Here is the story that brought us together.</p>
+    </div>
+    <div class="timeline">
+      <div class="chapter reveal">
+        <div class="yr">2024 · The first meeting</div>
+        <h3>A sincere compliment</h3>
+        <p>In 2024, in the most fitting place for a story rooted in purpose, Richard and Shula's paths crossed at the Church of Pentecost, Maryland Central Assembly. It was not a dramatic entrance or a loud moment that started it all. It was something quieter, something that felt simple, but somehow carried weight. During the annual Christmas Convention, after church one evening, Richard noticed Shula in a dress that was modest, effortless, and striking in the way true elegance always is. He walked up to her for one reason only: to say what he genuinely saw. Just a sincere compliment, no performance, no agenda. That brief conversation became the first page of a story neither of them could predict.</p>
+      </div>
+      <div class="chapter reveal">
+        <div class="yr">That same night</div>
+        <h3>The words that stayed</h3>
+        <p>Later, Shula would admit something that still makes them smile. That same night, when she got home, she told her sister that a guy at church had said she looked amazing even though she felt she had dressed in the simplest way. It left a mark. Not because it was flattering, but because it was honest. It was the kind of moment that feels small in the room, but grows bigger in the heart. Sometimes God starts a thing quietly, then lets time reveal how loud it really is.</p>
+      </div>
+      <div class="chapter reveal">
+        <div class="yr">Five months of patience</div>
+        <h3>Admired from afar</h3>
+        <p>And then came the surprising part: nothing happened quickly. They did not exchange contacts that night. Life kept moving. For more than five months, Richard barely got the chance to speak with Shula again. He would see her and admire her from afar, with the kind of respect that does not rush what it cannot yet hold. Looking back now, that season feels meaningful. It taught patience. It protected the beginning. It let the story start with honor instead of impulse.</p>
+      </div>
+      <div class="chapter reveal">
+        <div class="yr">Side by side in service</div>
+        <h3>Where leadership became the bridge</h3>
+        <p>Their real closeness began through service. When Richard was appointed to assist as an assistant youth leader, Shula was the main youth leader, and suddenly "seeing" each other became "working" with each other. Leadership became the bridge. Responsibility became the meeting point. In those moments, they discovered something rare: they did not just get along, they aligned. They could plan together, carry tasks together, solve problems together, and still laugh like friends in the middle of it all.</p>
+      </div>
+      <div class="chapter reveal">
+        <div class="yr">Generation of Grace</div>
+        <h3>Built one rehearsal at a time</h3>
+        <p>Around that same season, the youth choir was birthed, Generation of Grace. Richard joined a few weeks after it was established, and the rehearsals became their rhythm. Almost every weekend brought practice, planning, teamwork, and those conversations that always started as normal and somehow turned unforgettable by evening. The funniest moments were not staged. They were the natural result of two people becoming comfortable, building trust one rehearsal at a time, one voice note at a time, one inside joke at a time, until "youth leaders" quietly turned into "best friends," and then, without force, into something deeper.</p>
+      </div>
+      <div class="chapter reveal">
+        <div class="yr">Toward 2026</div>
+        <h3>An answered prayer in motion</h3>
+        <p>That is the heartbeat of Rich and Shula's story. It did not begin with a rush. It began with grace, grew through service, and deepened through consistency. What started as partners in ministry became friendship, then companionship, and now, an answered prayer in motion. As they look toward 2026, they are not just planning a wedding. They are honoring a journey that has already proven something powerful: the best love is not only felt, it is built.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="thread reveal"><span></span></div>
+
+<!-- CELEBRATIONS -->
+<section id="celebrations">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Two ceremonies, one love</span>
+      <h2>The Celebrations</h2>
+      <p>We honour both our heritage and our faith — a traditional engagement followed by our white wedding.</p>
+    </div>
+    <div class="cele-grid">
+      <div class="cele trad reveal">
+        <div class="ornament"></div>
+        <div class="tag">Day One</div>
+        <h3>Traditional Ceremony</h3>
+        <p style="opacity:.9">The customary celebration that joins our two families in full colour and culture.</p>
+        <div class="det">
+          <div><b>Date</b><span>Friday, 23 October 2026</span></div>
+          <div><b>Time</b><span>11:00 AM</span></div>
+          <div><b>Venue</b><span>The Grand Hall · Silver Spring, MD</span></div>
+          <div><b>Attire</b><span>Traditional / Kente · Orange, White, Green &amp; Gold</span></div>
+        </div>
+      </div>
+      <div class="cele white reveal">
+        <div class="ornament"></div>
+        <div class="tag">Day Two</div>
+        <h3>The White Wedding</h3>
+        <p style="opacity:.9">Our covenant before God and loved ones, followed by dinner and dancing into the night.</p>
+        <div class="det">
+          <div><b>Date</b><span>Saturday, 24 October 2026</span></div>
+          <div><b>Time</b><span>2:00 PM · Reception 6:00 PM</span></div>
+          <div><b>Venue</b><span>Church of Pentecost · Reception TBC</span></div>
+          <div><b>Attire</b><span>Formal · Gold, White &amp; Light Sage</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="thread reveal"><span></span></div>
+
+<!-- WEDDING PARTY -->
+<section id="party">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">By our side</span>
+      <h2>The Wedding Party</h2>
+      <p>The people standing with us — our families, friends, and the ones who've carried this journey with us.</p>
+    </div>
+
+    <div class="party-tabs reveal">
+      <button class="ptab active" data-g="groom">The Groom's Side</button>
+      <button class="ptab" data-g="bride">The Bride's Side</button>
+    </div>
+
+    <!-- GROOM SIDE -->
+    <div class="party-group show" data-group="groom">
+      <h3>Traditional Wedding Men</h3>
+      <div class="gsub">Richie's customary procession</div>
+      <div class="people" style="margin-bottom:48px">
+        <div class="person"><div class="portrait">KB</div><p>Kwame Boateng</p><span>Lead Elder</span></div>
+        <div class="person"><div class="portrait">YA</div><p>Yaw Asare</p><span>Linguist</span></div>
+        <div class="person"><div class="portrait">KO</div><p>Kofi Owusu</p><span>Family Head</span></div>
+        <div class="uploadtile"><div class="plus">+</div><small>Add your photo</small></div>
+      </div>
+
+      <h3>Groomsmen &amp; Best Man</h3>
+      <div class="gsub">Standing with the groom</div>
+      <div class="people">
+        <div class="person"><div class="portrait">DA</div><p>Daniel Addo</p><span>Best Man</span></div>
+        <div class="person"><div class="portrait">EM</div><p>Emmanuel Mensah</p><span>Groomsman</span></div>
+        <div class="person"><div class="portrait">ST</div><p>Samuel Tetteh</p><span>Groomsman</span></div>
+        <div class="uploadtile"><div class="plus">+</div><small>Add your photo</small></div>
+      </div>
+    </div>
+
+    <!-- BRIDE SIDE -->
+    <div class="party-group" data-group="bride">
+      <h3>Traditional Wedding Ladies</h3>
+      <div class="gsub">Shula's customary procession</div>
+      <div class="people" style="margin-bottom:48px">
+        <div class="person"><div class="portrait">AB</div><p>Abena Boakye</p><span>Lead Auntie</span></div>
+        <div class="person"><div class="portrait">AS</div><p>Akosua Sarpong</p><span>Spokeswoman</span></div>
+        <div class="person"><div class="portrait">EA</div><p>Esi Amoah</p><span>Family Head</span></div>
+        <div class="uploadtile"><div class="plus">+</div><small>Add your photo</small></div>
+      </div>
+
+      <h3>Bridesmaids &amp; Maids of Honour</h3>
+      <div class="gsub">Standing with the bride</div>
+      <div class="people">
+        <div class="person"><div class="portrait">NA</div><p>Nana Adjei</p><span>Maid of Honour</span></div>
+        <div class="person"><div class="portrait">AM</div><p>Ama Mensima</p><span>Maid of Honour</span></div>
+        <div class="person"><div class="portrait">GO</div><p>Gifty Osei</p><span>Bridesmaid</span></div>
+        <div class="uploadtile"><div class="plus">+</div><small>Add your photo</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRE-WEDDING GALLERY -->
+<section class="gallery" id="gallery">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Moments</span>
+      <h2>Pre-Wedding Photos</h2>
+      <p>A glimpse of our journey so far, captured in our engagement shoot.</p>
+    </div>
+    <div class="grid-photos reveal">
+      <div class="ph tall"><span class="lbl">Us</span></div>
+      <div class="ph"></div>
+      <div class="ph"></div>
+      <div class="ph"><span class="lbl">Forever</span></div>
+      <div class="ph"></div>
+      <div class="ph tall"><span class="lbl">Love</span></div>
+      <div class="ph"></div>
+      <div class="ph"></div>
+    </div>
+  </div>
+</section>
+
+<div class="thread reveal"><span></span></div>
+
+<!-- VENUES -->
+<section id="venues">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Where to find us</span>
+      <h2>Venues</h2>
+      <p>Everything you need to be in the right place at the right time.</p>
+    </div>
+    <div class="cards">
+      <div class="card reveal"><div class="map"></div><div class="body">
+        <span class="role">Traditional Engagement</span><h4>The Grand Hall</h4>
+        <p>Silver Spring, Maryland · Friday 11:00 AM. Parking available on site.</p>
+        <a class="link" href="#">Get directions →</a></div></div>
+      <div class="card reveal"><div class="map"></div><div class="body">
+        <span class="role">Ceremony</span><h4>Church of Pentecost</h4>
+        <p>Maryland Central Assembly · Saturday 2:00 PM.</p>
+        <a class="link" href="#">Get directions →</a></div></div>
+      <div class="card reveal"><div class="map"></div><div class="body">
+        <span class="role">Reception</span><h4>The Reception Venue</h4>
+        <p>Dinner &amp; dancing · Saturday 6:00 PM. Details to be confirmed.</p>
+        <a class="link" href="#">Get directions →</a></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TRAVEL & STAY -->
+<section id="travel">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">For our guests</span>
+      <h2>Travel &amp; Stay</h2>
+      <p>Flying in? Here are our recommended hotels and the easiest way to reach us.</p>
+    </div>
+    <div class="cards">
+      <div class="card reveal"><div class="map"></div><div class="body">
+        <span class="role">Recommended · Room block</span><h4>The Hotel — Silver Spring</h4>
+        <p>5 min from the ceremony. Use code <b>RICHIE&amp;AKUA</b> for the group rate.</p>
+        <a class="link" href="#">Book a room →</a></div></div>
+      <div class="card reveal"><div class="map"></div><div class="body">
+        <span class="role">Mid-range</span><h4>Comfort Suites — Laurel</h4>
+        <p>Free shuttle &amp; breakfast. Close to the reception venue.</p>
+        <a class="link" href="#">Book a room →</a></div></div>
+      <div class="card reveal"><div class="map"></div><div class="body">
+        <span class="role">Getting here</span><h4>Airports</h4>
+        <p>BWI (~30 min) · Reagan DCA (~40 min) · Dulles IAD (~50 min). Rideshare widely available.</p>
+        <a class="link" href="#">Travel tips →</a></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="thread reveal"><span></span></div>
+
+<!-- FAMILY -->
+<section id="family">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Our roots</span>
+      <h2>Family</h2>
+      <p>The two families uniting in joy and celebration.</p>
+    </div>
+    <div class="fam-grid">
+      <div class="fam reveal">
+        <div class="tag">The Groom's Family</div>
+        <h4>The [Surname] Family</h4>
+        <ul>
+          <li>Father of the Groom</li>
+          <li>Mother of the Groom</li>
+          <li>Siblings &amp; extended family</li>
+        </ul>
+      </div>
+      <div class="fam reveal">
+        <div class="tag">The Bride's Family</div>
+        <h4>The [Surname] Family</h4>
+        <ul>
+          <li>Father of the Bride</li>
+          <li>Mother of the Bride</li>
+          <li>Siblings &amp; extended family</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VENDORS -->
+<section id="vendors">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">The dream team</span>
+      <h2>Our Vendors</h2>
+      <p>The talented people bringing our day to life. We highly recommend them.</p>
+    </div>
+    <div class="vend">
+      <div class="vcard reveal"><span>Photography</span><h4>Studio Name</h4></div>
+      <div class="vcard reveal"><span>Catering</span><h4>Caterer Name</h4></div>
+      <div class="vcard reveal"><span>Décor &amp; Florals</span><h4>Décor Name</h4></div>
+      <div class="vcard reveal"><span>Cake</span><h4>Bakery Name</h4></div>
+      <div class="vcard reveal"><span>DJ &amp; Sound</span><h4>DJ Name</h4></div>
+      <div class="vcard reveal"><span>Makeup &amp; Hair</span><h4>Artist Name</h4></div>
+      <div class="vcard reveal"><span>Planner</span><h4>Planner Name</h4></div>
+      <div class="vcard reveal"><span>Attire</span><h4>Designer Name</h4></div>
+    </div>
+  </div>
+</section>
+
+<!-- DRESS CODE / PALETTE -->
+<section class="palette" id="dress">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Dress to celebrate</span>
+      <h2>Colours &amp; Dress Code</h2>
+      <p>Two celebrations, two palettes. We'd love our guests to dress with us — here are the colours for each day.</p>
+    </div>
+    <div class="dress-cols reveal">
+      <div class="dress-col">
+        <h3>Traditional Ceremony</h3>
+        <span class="dc-sub">Traditional / Kente attire</span>
+        <div class="swatches">
+          <div class="sw"><div class="chip" style="background:#D7792F"></div><small>Orange</small></div>
+          <div class="sw"><div class="chip" style="background:#FCFAF5"></div><small>White</small></div>
+          <div class="sw"><div class="chip" style="background:#3F7A47"></div><small>Green</small></div>
+          <div class="sw"><div class="chip" style="background:#C49A48"></div><small>Gold</small></div>
+        </div>
+      </div>
+      <div class="dress-col">
+        <h3>The White Wedding</h3>
+        <span class="dc-sub">Formal attire</span>
+        <div class="swatches">
+          <div class="sw"><div class="chip" style="background:#C49A48"></div><small>Gold</small></div>
+          <div class="sw"><div class="chip" style="background:#FCFAF5"></div><small>White</small></div>
+          <div class="sw"><div class="chip" style="background:#B2C2A6"></div><small>Light Sage</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RSVP -->
+<section id="rsvp">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Will you join us?</span>
+      <h2>RSVP</h2>
+      <p>Kindly respond by 30 September 2026 so we can prepare to celebrate with you.</p>
+    </div>
+    <div class="rsvp-box reveal">
+      <div class="field"><label>Full name</label><input type="text" placeholder="Your name"></div>
+      <div class="field"><label>Email</label><input type="email" placeholder="you@email.com"></div>
+      <div class="field"><label>Will you attend?</label>
+        <div class="seg">
+          <button class="on" type="button">Joyfully accept</button>
+          <button type="button">Regretfully decline</button>
+        </div>
+      </div>
+      <div class="field"><label>Which celebrations?</label>
+        <div class="seg">
+          <button type="button">Traditional</button>
+          <button type="button">White Wedding</button>
+          <button class="on" type="button">Both</button>
+        </div>
+      </div>
+      <div class="field"><label>Number of guests</label>
+        <select><option>Just me</option><option>2</option><option>3</option><option>4</option></select>
+      </div>
+      <div class="field"><label>Meal preference</label>
+        <select><option>Standard</option><option>Vegetarian</option><option>Vegan</option><option>Allergy — please specify</option></select>
+      </div>
+      <button class="btn-gold" type="button">Send our RSVP</button>
+    </div>
+  </div>
+</section>
+
+<div class="thread reveal"><span></span></div>
+
+<!-- REGISTRY -->
+<section id="registry">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Your presence is the gift</span>
+      <h2>Registry &amp; Gifts</h2>
+      <p>Your love and prayers mean the world. For those who've asked, here are a few ways to bless us.</p>
+    </div>
+    <div class="reg-grid">
+      <div class="reg reveal"><div class="ic">🏡</div><h4>Home Registry</h4><p>Help us build our first home together.</p><a class="link" href="#">View list →</a></div>
+      <div class="reg reveal"><div class="ic">✈️</div><h4>Honeymoon Fund</h4><p>Contribute to our first adventure as a married couple.</p><a class="link" href="#">Contribute →</a></div>
+      <div class="reg reveal"><div class="ic">📱</div><h4>Mobile Money</h4><p>For family near and far — send a gift directly.</p><a class="link" href="#">Details →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- AFTER THE WEDDING -->
+<section class="after" id="after">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">After the celebration</span>
+      <h2>Share Your Photos</h2>
+      <p>Captured a moment from our day? Upload it here — every photo and video helps us relive it. This gallery opens after the wedding.</p>
+    </div>
+    <div class="after-up reveal"><div class="plus" style="border:1px solid var(--gold-light);width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center">+</div>Upload your photos &amp; videos</div>
+  </div>
+</section>
+
+<!-- GUESTBOOK -->
+<section id="guestbook">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Leave us a note</span>
+      <h2>Guestbook</h2>
+      <p>Words of love, blessings and well-wishes from our people.</p>
+    </div>
+    <div class="wishes reveal">
+      <div class="wish"><p>"From the first day, we knew you two were meant to be. Wishing you a lifetime of joy."</p><span>— The Mensah Family</span></div>
+      <div class="wish"><p>"May your home be filled with laughter, faith and endless love. Congratulations!"</p><span>— Auntie Abena</span></div>
+      <div class="wish"><p>"Can't wait to dance the night away with you both. So happy for you!"</p><span>— Daniel</span></div>
+      <div class="wish"><p>"Two beautiful souls becoming one. God bless your union."</p><span>— Maryland Central Assembly</span></div>
+    </div>
+    <div class="center" style="margin-top:30px"><a href="#" class="nav-rsvp reveal">Sign the guestbook</a></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Good to know</span>
+      <h2>Questions &amp; Answers</h2>
+    </div>
+    <div class="faq">
+      <div class="q reveal"><h4>What should I wear?</h4><div class="a">Formal attire for the white wedding in our colours — gold, teal and burgundy. Traditional and colourful attire is welcome for the engagement.</div></div>
+      <div class="q reveal"><h4>Can I bring a plus-one?</h4><div class="a">Your invitation will indicate the number of seats reserved for you. Please confirm your party size in the RSVP form.</div></div>
+      <div class="q reveal"><h4>Will there be a live stream?</h4><div class="a">Yes — for family and friends in Ghana and abroad, a live-stream link will be shared here closer to the day.</div></div>
+      <div class="q reveal"><h4>Are children welcome?</h4><div class="a">We love your little ones. Details on childcare arrangements will be added soon.</div></div>
+      <div class="q reveal"><h4>Where do I park?</h4><div class="a">On-site parking is available at all venues. Rideshare is also a great option for the reception.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="monogram"><span class="rs" style="color:#fff">RS</span></div>
+  <div class="script">Richie &amp; Shula</div>
+  <div class="meta">24 · 10 · 2026 &nbsp;·&nbsp; Maryland, USA &nbsp;·&nbsp; #RichieWedsShula</div>
+  <p style="opacity:.55;font-size:.85rem;margin-top:26px">Made with love.</p>
+</footer>
+
+<script>
+  // nav scroll state
+  const nav=document.getElementById('nav');
+  addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>40));
+
+  // countdown
+  const target=new Date('2026-10-24T14:00:00').getTime();
+  function tick(){
+    const now=Date.now(),d=target-now;
+    if(d<0)return;
+    const day=Math.floor(d/864e5),h=Math.floor(d%864e5/36e5),m=Math.floor(d%36e5/6e4),s=Math.floor(d%6e4/1e3);
+    cdSet('cd-d',day);cdSet('cd-h',h);cdSet('cd-m',m);cdSet('cd-s',s);
+  }
+  function cdSet(id,v){document.getElementById(id).textContent=String(v).padStart(2,'0')}
+  tick();setInterval(tick,1000);
+
+  // party tabs
+  document.querySelectorAll('.ptab').forEach(t=>t.addEventListener('click',()=>{
+    document.querySelectorAll('.ptab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelectorAll('.party-group').forEach(g=>g.classList.toggle('show',g.dataset.group===t.dataset.g));
+  }));
+
+  // rsvp segmented toggles
+  document.querySelectorAll('.seg').forEach(seg=>{
+    seg.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+      seg.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+    }));
+  });
+
+  // faq
+  document.querySelectorAll('.q').forEach(q=>q.addEventListener('click',()=>q.classList.toggle('open')));
+
+  // reveal on scroll
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
