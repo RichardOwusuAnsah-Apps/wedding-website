@@ -1329,8 +1329,31 @@
   }
 }
 @media (max-width: 480px) {
-  .hphoto {
+  /* show only two corner photos on phone (top-left + bottom-right) */
+  .hp2,
+  .hp3 {
     display: none;
+  }
+  .hphoto {
+    display: block;
+    width: 70px;
+  }
+  .hp1 {
+    top: 80px;
+    left: 32px;
+    right: auto;
+    bottom: auto;
+  }
+  /* bottom-right tucked low into the corner, clear below the countdown */
+  .hp4 {
+    bottom: 50px;
+    right: 32px;
+    top: auto;
+    left: auto;
+  }
+  /* Scroll cue: own line, centered at the very bottom, clear of the photos */
+  .scrollcue {
+    bottom: 18px;
   }
 }
 
@@ -1604,44 +1627,66 @@
   }
 }
 
-/* phone: single column — photo, numeral, text; thread on the left */
-@media (max-width: 760px) {
-  .s-timeline::before {
-    left: 22px;
-    transform: none;
-  }
+/* phone: KEEP the alternating zig-zag, just scaled down (no single-column) */
+@media (max-width: 600px) {
   .s-row {
-    grid-template-columns: 1fr;
-    row-gap: 14px;
-    padding-left: 56px;
-    margin-bottom: 46px;
+    grid-template-columns: 1fr 38px 1fr;
+    margin-bottom: 30px;
   }
-  .s-row .s-text,
-  .s-row .s-photo,
-  .s-row.s-rev .s-text,
+  .s-row .s-text {
+    padding-right: 8px;
+  }
+  .s-row .s-photo {
+    padding-left: 8px;
+  }
   .s-row.s-rev .s-photo {
-    order: 0;
-    text-align: left;
+    padding-right: 8px;
     padding-left: 0;
+  }
+  .s-row.s-rev .s-text {
+    padding-left: 8px;
     padding-right: 0;
   }
-  .s-medallion {
-    position: absolute;
-    left: 22px;
-    top: 4px;
-    margin: 0;
-    transform: translateX(-50%);
+  .s-text .eyebrow {
+    font-size: 0.5rem;
+    letter-spacing: 0.14em;
   }
-  .s-row .s-text.reveal,
-  .s-row .s-photo.reveal,
-  .s-row.s-rev .s-text.reveal,
+  .s-text h3 {
+    font-size: 1rem;
+    margin: 0.1em 0 0.25em;
+  }
+  .s-text p {
+    font-size: 0.72rem;
+    line-height: 1.4;
+  }
+  .s-frame {
+    max-width: 92px;
+    padding: 4px 4px 5px;
+  }
+  .s-medallion {
+    width: 30px;
+    height: 30px;
+  }
+  .s-medallion b {
+    font-size: 0.8rem;
+  }
+  .s-ring {
+    inset: -5px;
+  }
+  /* same directions as desktop, shorter slide */
+  .s-row .s-text.reveal {
+    transform: translateX(-14px);
+  }
+  .s-row .s-photo.reveal {
+    transform: translateX(14px);
+  }
+  .s-row.s-rev .s-text.reveal {
+    transform: translateX(14px);
+  }
   .s-row.s-rev .s-photo.reveal {
-    transform: translateY(22px);
+    transform: translateX(-14px);
   }
   .s-cell.reveal.in {
     transform: none;
-  }
-  .s-frame {
-    max-width: 260px;
   }
 }
