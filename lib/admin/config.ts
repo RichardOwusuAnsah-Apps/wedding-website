@@ -37,6 +37,13 @@ export const RESOURCES: Record<string, ResourceDef> = {
       { name: "eyebrow", label: "Eyebrow (small label)", type: "text" },
       { name: "title", label: "Title", type: "text", required: true },
       { name: "body", label: "Body", type: "textarea" },
+      {
+        name: "photo_path",
+        label: "Story photo",
+        type: "image",
+        bucket: "gallery",
+        aspect: 4 / 5,
+      },
       SORT,
     ],
   },

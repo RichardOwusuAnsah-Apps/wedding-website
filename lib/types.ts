@@ -8,6 +8,10 @@ export interface StoryChapter {
   title: string;
   body: string | null;
   sort_order: number;
+  photo_path: string | null;
+  focal_x: number;
+  focal_y: number;
+  zoom: number;
 }
 
 export interface EventRow {

@@ -20,6 +20,11 @@ create table if not exists story_chapters (
   body text,
   sort_order int default 0
 );
+-- per-chapter story photo + crop (focal point + zoom)
+alter table story_chapters add column if not exists photo_path text;
+alter table story_chapters add column if not exists focal_x int default 50;
+alter table story_chapters add column if not exists focal_y int default 50;
+alter table story_chapters add column if not exists zoom numeric default 1;
 
 create table if not exists events (
   id uuid primary key default gen_random_uuid(),
