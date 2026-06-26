@@ -1174,3 +1174,169 @@
     padding: 32px 22px;
   }
 }
+
+/* ---------------------------------------------------------------------
+   Hero corner photos — tilted "hanging frames" (ported from mockup_5)
+   --------------------------------------------------------------------- */
+@layer components {
+  /* keep centered hero content above the photos */
+  .hero .monogram,
+  .hero h1,
+  .hero .meta,
+  .hero .countdown,
+  .hero .eyebrow,
+  .hero .scrollcue {
+    position: relative;
+    z-index: 3;
+  }
+
+  .hphoto {
+    position: absolute;
+    z-index: 1;
+    width: 138px;
+    opacity: 0;
+    animation: heroPhoto 0.9s ease forwards;
+  }
+  .hphoto .frame {
+    background: #fff;
+    padding: 9px 9px 16px;
+    border-radius: 3px;
+    box-shadow: 0 20px 42px -20px rgba(90, 27, 46, 0.5);
+    border: 1px solid var(--color-line);
+    transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .hphoto .inner {
+    aspect-ratio: 4 / 5;
+    background: linear-gradient(160deg, var(--color-sand), #e3d5bd);
+    border: 1px solid rgba(196, 154, 72, 0.55);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    color: var(--color-burgundy);
+    position: relative;
+    overflow: hidden;
+  }
+  .hphoto .inner img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hphoto .inner .cam {
+    font-size: 1.5rem;
+    opacity: 0.7;
+  }
+  .hphoto .inner small {
+    font-family: var(--font-util);
+    font-size: 0.56rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .hphoto::before {
+    content: "";
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--color-gold);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    z-index: 4;
+  }
+  .hphoto:hover .frame {
+    transform: rotate(0) translateY(-6px) scale(1.03);
+  }
+  .hp1 {
+    top: 98px;
+    left: 52px;
+  }
+  .hp1 .frame {
+    transform: rotate(-6deg);
+  }
+  .hp2 {
+    top: 122px;
+    right: 52px;
+    animation-delay: 0.12s;
+  }
+  .hp2 .frame {
+    transform: rotate(5.5deg);
+  }
+  .hp3 {
+    bottom: 92px;
+    left: 58px;
+    animation-delay: 0.24s;
+  }
+  .hp3 .frame {
+    transform: rotate(5deg);
+  }
+  .hp4 {
+    bottom: 114px;
+    right: 50px;
+    animation-delay: 0.36s;
+  }
+  .hp4 .frame {
+    transform: rotate(-5deg);
+  }
+}
+
+@keyframes heroPhoto {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hphoto {
+    opacity: 1;
+    animation: none;
+  }
+}
+@media (max-width: 1080px) {
+  .hphoto {
+    width: 116px;
+  }
+  .hp1 {
+    left: 42px;
+  }
+  .hp2 {
+    right: 42px;
+  }
+  .hp3 {
+    left: 46px;
+  }
+  .hp4 {
+    right: 42px;
+  }
+}
+@media (max-width: 760px) {
+  .hp2,
+  .hp3 {
+    display: none;
+  }
+  .hphoto {
+    width: 100px;
+  }
+  .hp1 {
+    top: 84px;
+    left: 38px;
+  }
+  .hp4 {
+    bottom: 96px;
+    right: 38px;
+  }
+}
+@media (max-width: 480px) {
+  .hphoto {
+    display: none;
+  }
+}

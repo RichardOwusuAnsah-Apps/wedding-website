@@ -76,6 +76,22 @@ export async function getPhotos(
   return (data ?? []) as Photo[];
 }
 
+/** Up to 4 admin-chosen "featured" photos for the hero hanging frames. */
+export async function getFeaturedPhotos(): Promise<Photo[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("photos")
+    .select("*")
+    .eq("is_featured", true)
+    .order("sort_order", { ascending: true })
+    .limit(4);
+  if (error) {
+    console.error("[queries] featured photos:", error.message);
+    return [];
+  }
+  return (data ?? []) as Photo[];
+}
+
 /** Approved guestbook wishes, newest first (RLS already hides pending rows). */
 export async function getApprovedGuestbook(): Promise<GuestbookEntry[]> {
   const supabase = await createClient();

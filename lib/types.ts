@@ -85,6 +85,7 @@ export interface Photo {
   storage_path: string;
   caption: string | null;
   sort_order: number;
+  is_featured: boolean; // shown in the hero "hanging photos"
   created_at: string;
 }
 

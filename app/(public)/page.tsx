@@ -19,6 +19,7 @@ import {
   getEvents,
   getFamilyGroups,
   getFaqs,
+  getFeaturedPhotos,
   getHotels,
   getPhotos,
   getRegistryItems,
@@ -55,6 +56,7 @@ export default async function Home() {
     postWedding,
     wishes,
     faqs,
+    featured,
   ] = await Promise.all([
     getSettings(),
     getStoryChapters(),
@@ -69,6 +71,7 @@ export default async function Home() {
     getPhotos("post_wedding"),
     getApprovedGuestbook(),
     getFaqs(),
+    getFeaturedPhotos(),
   ]);
 
   const weddingDate = settings.wedding_date || "2026-10-24T14:00:00";
@@ -83,6 +86,7 @@ export default async function Home() {
         tagline={settings.tagline || "Timeless · Elegant · Effortless"}
         location={settings.hero_location || "Maryland, USA"}
         targetIso={weddingDate}
+        featured={featured}
       />
 
       <Story chapters={chapters} />

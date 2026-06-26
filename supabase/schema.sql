@@ -98,6 +98,8 @@ create table if not exists photos (
   sort_order int default 0,
   created_at timestamptz default now()
 );
+-- hero "hanging photos": admin marks up to 4 gallery photos as featured
+alter table photos add column if not exists is_featured boolean default false;
 
 create table if not exists faqs (
   id uuid primary key default gen_random_uuid(),

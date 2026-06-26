@@ -1,6 +1,8 @@
 import { Monogram } from "@/components/ui/Monogram";
 import { Countdown } from "@/components/ui/Countdown";
+import { HeroPhotos } from "./HeroPhotos";
 import { splitCoupleNames, weddingDateParts } from "@/lib/format";
+import type { Photo } from "@/lib/types";
 
 /** Hero — monogram, tagline, names, date/location, live countdown. */
 export function Hero({
@@ -8,17 +10,20 @@ export function Hero({
   tagline,
   location,
   targetIso,
+  featured = [],
 }: {
   coupleNames: string;
   tagline: string;
   location: string;
   targetIso: string;
+  featured?: Photo[];
 }) {
   const { first, second } = splitCoupleNames(coupleNames);
   const date = weddingDateParts(targetIso);
 
   return (
     <section className="hero" id="top">
+      <HeroPhotos photos={featured} />
       <Monogram className="reveal" />
       <div
         className="eyebrow reveal"

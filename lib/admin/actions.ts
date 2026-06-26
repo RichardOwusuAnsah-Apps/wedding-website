@@ -115,7 +115,7 @@ export async function addPhoto(input: {
 
 export async function updatePhoto(
   id: string,
-  patch: { caption?: string | null; sort_order?: number },
+  patch: { caption?: string | null; sort_order?: number; is_featured?: boolean },
 ): Promise<Result> {
   const supabase = await authedClient();
   if (!supabase) return { error: "Not signed in" };

@@ -40,6 +40,23 @@ function PhotoCard({ photo }: { photo: Photo }) {
         value={caption}
         onChange={(e) => setCaption(e.target.value)}
       />
+      <button
+        type="button"
+        disabled={pending}
+        className={`w-full mb-2 font-util text-[0.6rem] tracking-[0.12em] uppercase py-2 rounded-[2px] border transition ${
+          photo.is_featured
+            ? "bg-gold text-white border-gold"
+            : "border-line text-muted hover:text-burgundy"
+        }`}
+        onClick={() =>
+          startTransition(async () => {
+            await updatePhoto(photo.id, { is_featured: !photo.is_featured });
+            router.refresh();
+          })
+        }
+      >
+        {photo.is_featured ? "★ Featured in hero" : "☆ Feature in hero"}
+      </button>
       <div className="flex items-center gap-2">
         <input
           type="number"
@@ -126,7 +143,14 @@ export function GalleryManager({ photos }: { photos: Photo[] }) {
 
   return (
     <div>
-      <h1 className="font-display text-4xl text-burgundy mb-6">Gallery</h1>
+      <h1 className="font-display text-4xl text-burgundy mb-2">Gallery</h1>
+      <p className="text-muted mb-6 text-[0.95rem]">
+        Mark up to <strong>4</strong> photos as{" "}
+        <span className="text-gold">★ Featured</span> to display them as the
+        hero&apos;s hanging corner photos.
+        {" "}
+        {photos.filter((p) => p.is_featured).length} featured.
+      </p>
 
       <div className="party-tabs" style={{ justifyContent: "flex-start" }}>
         <button
