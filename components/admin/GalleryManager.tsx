@@ -25,9 +25,8 @@ function PhotoCard({ photo }: { photo: Photo }) {
   const [order, setOrder] = useState(String(photo.sort_order));
   const [saved, setSaved] = useState(false);
 
-  // Frame in the shape this photo actually appears in: hero 4:5 if featured,
-  // otherwise the 1:1 gallery grid.
-  const cropAspect = photo.is_featured ? 4 / 5 : 1;
+  // Gallery tiles are always square; the hero crops the same focal point to 4:5.
+  const cropAspect = 1;
 
   function saveCrop(crop: Crop) {
     startTransition(async () => {
@@ -51,14 +50,11 @@ function PhotoCard({ photo }: { photo: Photo }) {
           onChange={saveCrop}
         />
         {saved && (
-          <span className="absolute top-1.5 left-1.5 z-10 font-util text-[0.5rem] tracking-[0.1em] uppercase bg-teal text-white px-1.5 py-0.5 rounded">
+          <span className="absolute top-1.5 right-1.5 z-20 font-util text-[0.5rem] tracking-[0.1em] uppercase bg-teal text-white px-1.5 py-0.5 rounded">
             Saved ✓
           </span>
         )}
       </div>
-      <p className="font-util text-[0.54rem] tracking-[0.1em] uppercase text-muted mt-1.5 mb-2">
-        Drag to position · scroll to zoom
-      </p>
 
       <input
         style={inputStyle}
