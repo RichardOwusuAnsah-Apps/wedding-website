@@ -13,19 +13,27 @@ const SIDES: { key: "groom" | "bride"; label: string; groups: Group[] }[] = [
     key: "groom",
     label: "The Groom's Side",
     groups: [
+      { key: "best_man", title: "Best Man", sub: "By the groom's side" },
+      { key: "groomsmen", title: "Groomsmen", sub: "Standing with the groom" },
       { key: "trad_men", title: "Traditional Wedding Men", sub: "Richie's customary procession" },
-      { key: "groomsmen", title: "Groomsmen & Best Man", sub: "Standing with the groom" },
     ],
   },
   {
     key: "bride",
     label: "The Bride's Side",
     groups: [
+      { key: "maid_of_honour", title: "Maids of Honour", sub: "By the bride's side" },
+      { key: "bridesmaids", title: "Bridesmaids", sub: "Standing with the bride" },
       { key: "trad_ladies", title: "Traditional Wedding Ladies", sub: "Shula's customary procession" },
-      { key: "bridesmaids", title: "Bridesmaids & Maids of Honour", sub: "Standing with the bride" },
     ],
   },
 ];
+
+// Hide unfilled placeholder rows (e.g. "[Name TBA]") from the public site.
+function isReal(member: PartyMember): boolean {
+  const n = (member.name ?? "").trim();
+  return n.length > 0 && !n.startsWith("[");
+}
 
 function Person({ member }: { member: PartyMember }) {
   return (
@@ -44,7 +52,6 @@ function Person({ member }: { member: PartyMember }) {
         )}
       </div>
       <p>{member.name}</p>
-      {member.role && <span>{member.role}</span>}
     </div>
   );
 }
@@ -71,7 +78,7 @@ export function PartyTabs({ members }: { members: PartyMember[] }) {
       <div className="party-group" key={side}>
         {active.groups.map((g, gi) => {
           const people = members
-            .filter((m) => m.side === side && m.group_key === g.key)
+            .filter((m) => m.side === side && m.group_key === g.key && isReal(m))
             .sort((a, b) => a.sort_order - b.sort_order);
           if (people.length === 0) return null;
           return (

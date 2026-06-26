@@ -17,16 +17,18 @@ const SIDES: Side[] = [
     key: "groom",
     label: "Groom's Side",
     groups: [
+      { key: "best_man", label: "Best Man" },
+      { key: "groomsmen", label: "Groomsmen" },
       { key: "trad_men", label: "Traditional Wedding Men" },
-      { key: "groomsmen", label: "Groomsmen & Best Man" },
     ],
   },
   {
     key: "bride",
     label: "Bride's Side",
     groups: [
+      { key: "maid_of_honour", label: "Maids of Honour" },
+      { key: "bridesmaids", label: "Bridesmaids" },
       { key: "trad_ladies", label: "Traditional Wedding Ladies" },
-      { key: "bridesmaids", label: "Bridesmaids & Maids of Honour" },
     ],
   },
 ];
