@@ -681,13 +681,16 @@
   .gallery {
     background: linear-gradient(180deg, #fbf7ef, var(--color-ivory));
   }
+  /* uniform square gallery — every tile is 1:1, 2 prominent columns */
   .grid-photos {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 900px;
+    margin: 0 auto;
   }
   .ph {
-    aspect-ratio: 1;
+    aspect-ratio: 1 / 1;
     border-radius: 3px;
     background: linear-gradient(135deg, var(--color-sand), #e6d7be);
     position: relative;
@@ -695,10 +698,6 @@
   }
   .ph:nth-child(3n) {
     background: linear-gradient(135deg, #e7d8c0, var(--color-sand));
-  }
-  .ph.tall {
-    grid-row: span 2;
-    aspect-ratio: 1 / 2;
   }
   .ph img {
     position: absolute;
@@ -1172,6 +1171,9 @@
   }
   .rsvp-box {
     padding: 32px 22px;
+  }
+  .grid-photos {
+    grid-template-columns: 1fr;
   }
 }
 

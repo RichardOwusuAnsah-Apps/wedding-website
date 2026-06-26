@@ -17,8 +17,8 @@ export function Gallery({ photos }: { photos: Photo[] }) {
           </p>
         ) : (
           <div className="grid-photos reveal">
-            {photos.map((p, i) => (
-              <div className={`ph${i % 5 === 0 ? " tall" : ""}`} key={p.id}>
+            {photos.map((p) => (
+              <div className="ph" key={p.id}>
                 <Image
                   src={publicImageUrl("gallery", p.storage_path)}
                   alt={p.caption ?? "Pre-wedding photo"}
