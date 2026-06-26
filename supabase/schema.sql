@@ -43,6 +43,10 @@ create table if not exists wedding_party (
   photo_path text,                      -- storage path in 'party-photos'
   sort_order int default 0
 );
+-- per-portrait crop (focal point + zoom)
+alter table wedding_party add column if not exists focal_x int default 50;
+alter table wedding_party add column if not exists focal_y int default 50;
+alter table wedding_party add column if not exists zoom numeric default 1;
 
 create table if not exists venues (
   id uuid primary key default gen_random_uuid(),

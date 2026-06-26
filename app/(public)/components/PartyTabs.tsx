@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import type { PartyMember } from "@/lib/types";
 import { initials, publicImageUrl } from "@/lib/storage";
+import { focalStyle } from "@/lib/image";
 
 type Group = { key: string; title: string; sub: string };
 
@@ -36,7 +37,7 @@ function Person({ member }: { member: PartyMember }) {
             alt={member.name}
             fill
             sizes="(max-width: 900px) 50vw, 25vw"
-            style={{ objectFit: "cover" }}
+            style={focalStyle(member)}
           />
         ) : (
           initials(member.name)

@@ -31,6 +31,9 @@ export interface PartyMember {
   role: string | null;
   photo_path: string | null;
   sort_order: number;
+  focal_x: number;
+  focal_y: number;
+  zoom: number;
 }
 
 export interface Venue {

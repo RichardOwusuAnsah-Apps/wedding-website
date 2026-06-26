@@ -2,47 +2,72 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { addPhoto, updatePhoto, deleteRow } from "@/lib/admin/actions";
 import { publicImageUrl } from "@/lib/storage";
-import { focalStyle } from "@/lib/image";
-import { PhotoPositioner } from "@/components/admin/PhotoPositioner";
+import { ImageCropper, type Crop } from "@/components/admin/ImageCropper";
 import type { Photo } from "@/lib/types";
 
 type GalleryKey = "pre_wedding" | "post_wedding";
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "8px 10px",
+  border: "1px solid var(--color-line)",
+  borderRadius: 3,
+  background: "var(--color-ivory)",
+};
 
 function PhotoCard({ photo }: { photo: Photo }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [caption, setCaption] = useState(photo.caption ?? "");
   const [order, setOrder] = useState(String(photo.sort_order));
-  const [adjusting, setAdjusting] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  // Frame in the shape this photo actually appears in: hero 4:5 if featured,
+  // otherwise the 1:1 gallery grid.
+  const cropAspect = photo.is_featured ? 4 / 5 : 1;
+
+  function saveCrop(crop: Crop) {
+    startTransition(async () => {
+      await updatePhoto(photo.id, crop);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 1200);
+    });
+  }
 
   return (
     <div className="bg-white border border-line rounded-md p-3">
-      <div className="relative w-full aspect-square rounded overflow-hidden border border-line bg-sand mb-3">
-        <Image
-          src={publicImageUrl("gallery", photo.storage_path)}
-          alt={photo.caption ?? "Photo"}
-          fill
-          sizes="(max-width:900px) 50vw, 220px"
-          style={focalStyle(photo)}
+      <div className="relative">
+        <ImageCropper
+          url={publicImageUrl("gallery", photo.storage_path)}
+          aspect={cropAspect}
+          value={{
+            focal_x: photo.focal_x ?? 50,
+            focal_y: photo.focal_y ?? 50,
+            zoom: photo.zoom ?? 1,
+          }}
+          onChange={saveCrop}
         />
+        {saved && (
+          <span className="absolute top-1.5 left-1.5 z-10 font-util text-[0.5rem] tracking-[0.1em] uppercase bg-teal text-white px-1.5 py-0.5 rounded">
+            Saved ✓
+          </span>
+        )}
       </div>
+      <p className="font-util text-[0.54rem] tracking-[0.1em] uppercase text-muted mt-1.5 mb-2">
+        Drag to position · scroll to zoom
+      </p>
+
       <input
+        style={inputStyle}
         className="text-sm mb-2"
-        style={{
-          width: "100%",
-          padding: "8px 10px",
-          border: "1px solid var(--color-line)",
-          borderRadius: 3,
-          background: "var(--color-ivory)",
-        }}
         placeholder="Caption"
         value={caption}
         onChange={(e) => setCaption(e.target.value)}
       />
+
       <button
         type="button"
         disabled={pending}
@@ -60,17 +85,12 @@ function PhotoCard({ photo }: { photo: Photo }) {
       >
         {photo.is_featured ? "★ Featured in hero" : "☆ Feature in hero"}
       </button>
+
       <div className="flex items-center gap-2">
         <input
           type="number"
           aria-label="Sort order"
-          style={{
-            width: 64,
-            padding: "8px 10px",
-            border: "1px solid var(--color-line)",
-            borderRadius: 3,
-            background: "var(--color-ivory)",
-          }}
+          style={{ ...inputStyle, width: 64 }}
           value={order}
           onChange={(e) => setOrder(e.target.value)}
         />
@@ -103,34 +123,6 @@ function PhotoCard({ photo }: { photo: Photo }) {
           Delete
         </button>
       </div>
-
-      {!adjusting ? (
-        <button
-          type="button"
-          className="w-full mt-2 font-util text-[0.6rem] tracking-[0.12em] uppercase py-2 rounded-[2px] border border-line text-muted hover:text-burgundy transition"
-          onClick={() => setAdjusting(true)}
-        >
-          ⤢ Reposition / zoom
-        </button>
-      ) : (
-        <PhotoPositioner
-          url={publicImageUrl("gallery", photo.storage_path)}
-          initial={{
-            focal_x: photo.focal_x ?? 50,
-            focal_y: photo.focal_y ?? 50,
-            zoom: photo.zoom ?? 1,
-          }}
-          pending={pending}
-          onCancel={() => setAdjusting(false)}
-          onSave={(crop) =>
-            startTransition(async () => {
-              await updatePhoto(photo.id, crop);
-              setAdjusting(false);
-              router.refresh();
-            })
-          }
-        />
-      )}
     </div>
   );
 }
@@ -178,8 +170,8 @@ export function GalleryManager({ photos }: { photos: Photo[] }) {
       <p className="text-muted mb-6 text-[0.95rem]">
         Mark up to <strong>4</strong> photos as{" "}
         <span className="text-gold">★ Featured</span> to display them as the
-        hero&apos;s hanging corner photos.
-        {" "}
+        hero&apos;s hanging corner photos. Drag any photo to reposition it; scroll
+        to zoom.{" "}
         {photos.filter((p) => p.is_featured).length} featured.
       </p>
 

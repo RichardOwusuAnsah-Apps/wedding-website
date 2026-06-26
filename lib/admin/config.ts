@@ -12,6 +12,7 @@ export interface FieldDef {
   placeholder?: string;
   options?: { value: string; label: string }[];
   bucket?: string; // for image fields
+  aspect?: number; // for image fields — crop frame width/height (e.g. 3/4)
 }
 
 export interface ResourceDef {
@@ -96,7 +97,13 @@ export const RESOURCES: Record<string, ResourceDef> = {
       },
       { name: "name", label: "Name", type: "text", required: true },
       { name: "role", label: "Role", type: "text", placeholder: "Best Man" },
-      { name: "photo_path", label: "Photo", type: "image", bucket: "party-photos" },
+      {
+        name: "photo_path",
+        label: "Photo",
+        type: "image",
+        bucket: "party-photos",
+        aspect: 3 / 4,
+      },
       SORT,
     ],
   },

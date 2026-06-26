@@ -2,11 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import Image from "next/image";
 import type { FieldDef, ResourceDef } from "@/lib/admin/config";
 import { saveRow, deleteRow } from "@/lib/admin/actions";
 import { createClient } from "@/lib/supabase/client";
 import { publicImageUrl } from "@/lib/storage";
+import { ImageCropper, type Crop } from "@/components/admin/ImageCropper";
 
 type Row = Record<string, unknown>;
 
@@ -26,13 +26,33 @@ function Field({
   field,
   value,
   onChange,
+  crop,
+  onCrop,
 }: {
   field: FieldDef;
   value: string;
   onChange: (v: string) => void;
+  crop?: Crop;
+  onCrop?: (c: Crop) => void;
 }) {
   const [uploading, setUploading] = useState(false);
   const [err, setErr] = useState("");
+
+  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setErr("");
+    try {
+      const path = await uploadToBucket(field.bucket!, file);
+      onChange(path);
+      onCrop?.({ focal_x: 50, focal_y: 50, zoom: 1 }); // reset crop for new photo
+    } catch {
+      setErr("Upload failed. Try again.");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   if (field.type === "textarea") {
     return (
@@ -73,44 +93,46 @@ function Field({
       <div className="field">
         <label>{field.label}</label>
         {value ? (
-          <div className="flex items-center gap-4 mb-3">
-            <div className="relative w-20 h-24 rounded overflow-hidden border border-line bg-sand">
-              <Image
-                src={publicImageUrl(field.bucket!, value)}
-                alt="preview"
-                fill
-                sizes="80px"
-                style={{ objectFit: "cover" }}
+          <>
+            <div className="max-w-[220px] mb-2">
+              <ImageCropper
+                url={publicImageUrl(field.bucket!, value)}
+                aspect={field.aspect ?? 1}
+                value={crop ?? { focal_x: 50, focal_y: 50, zoom: 1 }}
+                onChange={(c) => onCrop?.(c)}
               />
             </div>
-            <button
-              type="button"
-              className="font-util text-[0.66rem] tracking-[0.14em] uppercase text-burgundy underline"
-              onClick={() => onChange("")}
-            >
-              Remove
-            </button>
-          </div>
-        ) : null}
-        <input
-          type="file"
-          accept="image/*"
-          disabled={uploading}
-          onChange={async (e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-            setUploading(true);
-            setErr("");
-            try {
-              const path = await uploadToBucket(field.bucket!, file);
-              onChange(path);
-            } catch {
-              setErr("Upload failed. Try again.");
-            } finally {
-              setUploading(false);
-            }
-          }}
-        />
+            <p className="font-util text-[0.54rem] tracking-[0.1em] uppercase text-muted mb-2">
+              Drag to position · scroll to zoom
+            </p>
+            <div className="flex gap-5 items-center">
+              <label className="font-util text-[0.66rem] tracking-[0.14em] uppercase text-teal cursor-pointer">
+                Replace photo
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  disabled={uploading}
+                  onChange={handleUpload}
+                />
+              </label>
+              <button
+                type="button"
+                className="font-util text-[0.66rem] tracking-[0.14em] uppercase text-burgundy"
+                onClick={() => onChange("")}
+              >
+                Remove
+              </button>
+            </div>
+          </>
+        ) : (
+          <input
+            type="file"
+            accept="image/*"
+            disabled={uploading}
+            onChange={handleUpload}
+          />
+        )}
         {uploading && <p className="form-note">Uploading…</p>}
         {err && <p className="form-note error">{err}</p>}
       </div>
@@ -143,14 +165,33 @@ function RowForm({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
+  const hasImage = resource.fields.some((f) => f.type === "image");
   const [state, setState] = useState<Record<string, string>>(() => {
     const init: Record<string, string> = {};
     for (const f of resource.fields) {
       const v = row?.[f.name];
       init[f.name] = v == null ? "" : String(v);
     }
+    if (hasImage) {
+      init.focal_x = row?.focal_x == null ? "50" : String(row.focal_x);
+      init.focal_y = row?.focal_y == null ? "50" : String(row.focal_y);
+      init.zoom = row?.zoom == null ? "1" : String(row.zoom);
+    }
     return init;
   });
+
+  const crop: Crop = {
+    focal_x: Number(state.focal_x ?? 50),
+    focal_y: Number(state.focal_y ?? 50),
+    zoom: Number(state.zoom ?? 1),
+  };
+  const setCrop = (c: Crop) =>
+    setState((s) => ({
+      ...s,
+      focal_x: String(c.focal_x),
+      focal_y: String(c.focal_y),
+      zoom: String(c.zoom),
+    }));
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -181,6 +222,8 @@ function RowForm({
           field={f}
           value={state[f.name] ?? ""}
           onChange={(v) => setState((s) => ({ ...s, [f.name]: v }))}
+          crop={f.type === "image" ? crop : undefined}
+          onCrop={f.type === "image" ? setCrop : undefined}
         />
       ))}
       <div className="flex gap-3 items-center">

@@ -22,6 +22,11 @@ async function authedClient() {
   return supabase;
 }
 
+const clampNum = (raw: unknown, lo: number, hi: number, fallback: number) => {
+  const n = Number(raw);
+  return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : fallback;
+};
+
 /** Coerce form values to column types, keeping only configured columns. */
 function sanitize(table: string, data: Record<string, unknown>) {
   const res = RESOURCE_BY_TABLE[table];
@@ -35,6 +40,12 @@ function sanitize(table: string, data: Record<string, unknown>) {
       const s = raw == null ? "" : String(raw).trim();
       out[f.name] = s === "" ? null : s;
     }
+  }
+  // image-bearing tables also persist the crop (focal point + zoom)
+  if (res.fields.some((f) => f.type === "image")) {
+    out.focal_x = Math.round(clampNum(data.focal_x, 0, 100, 50));
+    out.focal_y = Math.round(clampNum(data.focal_y, 0, 100, 50));
+    out.zoom = clampNum(data.zoom, 1, 4, 1);
   }
   return out;
 }
