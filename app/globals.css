@@ -1434,7 +1434,7 @@
     display: grid;
     grid-template-columns: 1fr 66px 1fr;
     align-items: center;
-    margin-bottom: 64px;
+    margin-bottom: 40px;
   }
   .s-row:last-child {
     margin-bottom: 0;
@@ -1472,22 +1472,28 @@
   }
   .s-text h3 {
     font-family: var(--font-display);
-    font-size: 1.95rem;
+    font-size: 1.6rem;
     color: var(--color-burgundy);
-    margin: 0.15em 0 0.4em;
+    margin: 0.1em 0 0.3em;
   }
   .s-text p {
     color: var(--color-ink);
     opacity: 0.86;
+    font-size: 0.96rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+  .s-text .eyebrow {
+    font-size: 0.66rem;
   }
 
   /* gold-rimmed photo frame */
   .s-frame {
     display: inline-block;
     width: 100%;
-    max-width: 300px;
+    max-width: 228px;
     background: #fff;
-    padding: 10px 10px 14px;
+    padding: 8px 8px 11px;
     border-radius: 3px;
     border: 1px solid var(--color-line);
     box-shadow: 0 22px 46px -24px rgba(90, 27, 46, 0.5);
