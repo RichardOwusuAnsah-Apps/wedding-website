@@ -2,30 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const ITEMS: [href: string, label: string][] = [
-  ["/admin", "Dashboard"],
-  ["/admin/settings", "Settings"],
-  ["/admin/story", "Our Story"],
-  ["/admin/events", "Celebrations"],
-  ["/admin/party", "Wedding Party"],
-  ["/admin/gallery", "Gallery"],
-  ["/admin/venues", "Venues"],
-  ["/admin/hotels", "Travel & Stay"],
-  ["/admin/family", "Family"],
-  ["/admin/vendors", "Vendors"],
-  ["/admin/registry", "Registry"],
-  ["/admin/faq", "FAQ"],
-  ["/admin/rsvps", "RSVPs"],
-  ["/admin/guestbook", "Guestbook"],
-];
+import { ADMIN_NAV_ITEMS, isNavActive } from "@/lib/admin/nav";
 
 export function AdminNav() {
   const pathname = usePathname();
   return (
     <nav className="flex flex-col gap-0.5">
-      {ITEMS.map(([href, label]) => {
-        const active = href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
+      {ADMIN_NAV_ITEMS.map(([href, label]) => {
+        const active = isNavActive(href, pathname);
         return (
           <Link
             key={href}

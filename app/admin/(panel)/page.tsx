@@ -35,7 +35,9 @@ export default async function AdminDashboard() {
       </div>
 
       <p className="text-muted mt-10 font-util text-[0.72rem] tracking-[0.12em] uppercase">
-        Content management screens are added in the next step.
+        <span className="md:hidden">Tap ☰ Menu (top-left) </span>
+        <span className="hidden md:inline">Use the sidebar </span>
+        to manage every section.
       </p>
     </div>
   );

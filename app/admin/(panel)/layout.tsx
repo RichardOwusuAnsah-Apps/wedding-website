@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { AdminNav } from "@/components/admin/AdminNav";
+import { AdminMobileNav } from "@/components/admin/AdminMobileNav";
 
 async function signOut() {
   "use server";
@@ -26,17 +27,20 @@ export default async function AdminPanelLayout({
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="flex items-center justify-between gap-4 px-7 py-4 bg-white border-b border-line">
-        <Link href="/admin" className="brand text-[1.2rem]">
-          R <b>&amp;</b> S
-          <span className="font-util text-[0.62rem] tracking-[0.2em] uppercase text-muted ml-2">
-            Admin
-          </span>
-        </Link>
-        <div className="flex items-center gap-5">
+      <header className="flex items-center justify-between gap-3 px-5 sm:px-7 py-4 bg-white border-b border-line">
+        <div className="flex items-center gap-3">
+          <AdminMobileNav />
+          <Link href="/admin" className="brand text-[1.2rem]">
+            R <b>&amp;</b> S
+            <span className="font-util text-[0.62rem] tracking-[0.2em] uppercase text-muted ml-2 hidden sm:inline">
+              Admin
+            </span>
+          </Link>
+        </div>
+        <div className="flex items-center gap-4 sm:gap-5">
           <Link
             href="/"
-            className="font-util text-[0.68rem] tracking-[0.16em] uppercase text-muted hover:text-burgundy"
+            className="font-util text-[0.68rem] tracking-[0.16em] uppercase text-muted hover:text-burgundy hidden sm:inline"
           >
             View site ↗
           </Link>
