@@ -681,12 +681,12 @@
   .gallery {
     background: linear-gradient(180deg, #fbf7ef, var(--color-ivory));
   }
-  /* uniform square gallery — every tile is 1:1, 2 prominent columns */
+  /* uniform square gallery — every tile is 1:1, 2 columns */
   .grid-photos {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    max-width: 900px;
+    gap: 16px;
+    max-width: 620px;
     margin: 0 auto;
   }
   .ph {
