@@ -100,6 +100,10 @@ create table if not exists photos (
 );
 -- hero "hanging photos": admin marks up to 4 gallery photos as featured
 alter table photos add column if not exists is_featured boolean default false;
+-- per-photo crop (focal point + zoom), applied wherever the photo renders
+alter table photos add column if not exists focal_x int default 50;
+alter table photos add column if not exists focal_y int default 50;
+alter table photos add column if not exists zoom numeric default 1;
 
 create table if not exists faqs (
   id uuid primary key default gen_random_uuid(),

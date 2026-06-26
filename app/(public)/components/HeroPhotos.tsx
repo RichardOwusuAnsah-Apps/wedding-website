@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Photo } from "@/lib/types";
 import { publicImageUrl } from "@/lib/storage";
+import { focalStyle } from "@/lib/image";
 
 const SLOTS = ["hp1", "hp2", "hp3", "hp4"] as const;
 
@@ -25,7 +26,7 @@ export function HeroPhotos({ photos }: { photos: Photo[] }) {
                     alt=""
                     fill
                     sizes="138px"
-                    style={{ objectFit: "cover" }}
+                    style={focalStyle(photo)}
                   />
                 ) : (
                   <>

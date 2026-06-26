@@ -2,6 +2,7 @@ import Image from "next/image";
 import { SectionHead } from "@/components/ui/SectionHead";
 import type { Photo } from "@/lib/types";
 import { publicImageUrl } from "@/lib/storage";
+import { focalStyle } from "@/lib/image";
 
 /**
  * Post-wedding gallery. A simple date gate hides it until the wedding date
@@ -40,7 +41,7 @@ export function AfterWedding({
                   alt={p.caption ?? "Wedding photo"}
                   fill
                   sizes="(max-width: 900px) 50vw, 25vw"
-                  style={{ objectFit: "cover" }}
+                  style={focalStyle(p)}
                 />
                 {p.caption && <span className="lbl">{p.caption}</span>}
               </div>

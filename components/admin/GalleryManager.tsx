@@ -6,6 +6,8 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { addPhoto, updatePhoto, deleteRow } from "@/lib/admin/actions";
 import { publicImageUrl } from "@/lib/storage";
+import { focalStyle } from "@/lib/image";
+import { PhotoPositioner } from "@/components/admin/PhotoPositioner";
 import type { Photo } from "@/lib/types";
 
 type GalleryKey = "pre_wedding" | "post_wedding";
@@ -15,6 +17,7 @@ function PhotoCard({ photo }: { photo: Photo }) {
   const [pending, startTransition] = useTransition();
   const [caption, setCaption] = useState(photo.caption ?? "");
   const [order, setOrder] = useState(String(photo.sort_order));
+  const [adjusting, setAdjusting] = useState(false);
 
   return (
     <div className="bg-white border border-line rounded-md p-3">
@@ -24,7 +27,7 @@ function PhotoCard({ photo }: { photo: Photo }) {
           alt={photo.caption ?? "Photo"}
           fill
           sizes="(max-width:900px) 50vw, 220px"
-          style={{ objectFit: "cover" }}
+          style={focalStyle(photo)}
         />
       </div>
       <input
@@ -100,6 +103,34 @@ function PhotoCard({ photo }: { photo: Photo }) {
           Delete
         </button>
       </div>
+
+      {!adjusting ? (
+        <button
+          type="button"
+          className="w-full mt-2 font-util text-[0.6rem] tracking-[0.12em] uppercase py-2 rounded-[2px] border border-line text-muted hover:text-burgundy transition"
+          onClick={() => setAdjusting(true)}
+        >
+          ⤢ Reposition / zoom
+        </button>
+      ) : (
+        <PhotoPositioner
+          url={publicImageUrl("gallery", photo.storage_path)}
+          initial={{
+            focal_x: photo.focal_x ?? 50,
+            focal_y: photo.focal_y ?? 50,
+            zoom: photo.zoom ?? 1,
+          }}
+          pending={pending}
+          onCancel={() => setAdjusting(false)}
+          onSave={(crop) =>
+            startTransition(async () => {
+              await updatePhoto(photo.id, crop);
+              setAdjusting(false);
+              router.refresh();
+            })
+          }
+        />
+      )}
     </div>
   );
 }
