@@ -1329,29 +1329,35 @@
   }
 }
 @media (max-width: 480px) {
-  /* show only two corner photos on phone (top-left + bottom-right) */
-  .hp2,
-  .hp3 {
+  /* two TOP corner photos (beside the nav); remove the bottom two */
+  .hp1,
+  .hp2 {
+    display: block;
+  }
+  .hp3,
+  .hp4 {
     display: none;
   }
   .hphoto {
-    display: block;
     width: 70px;
   }
   .hp1 {
-    top: 80px;
-    left: 32px;
-    right: auto;
-    bottom: auto;
+    inset: 78px auto auto 30px;
+  } /* top-left */
+  .hp2 {
+    inset: 78px 30px auto auto;
+  } /* top-right */
+  /* breathing room for the centered block */
+  .hero .meta {
+    letter-spacing: 0.2em;
+    gap: 10px;
+    font-size: 0.76rem;
   }
-  /* bottom-right tucked low into the corner, clear below the countdown */
-  .hp4 {
-    bottom: 50px;
-    right: 32px;
-    top: auto;
-    left: auto;
+  .countdown {
+    gap: 22px;
+    margin-top: 38px;
   }
-  /* Scroll cue: own line, centered at the very bottom, clear of the photos */
+  /* Scroll cue: own line, centered at the very bottom, clear of everything */
   .scrollcue {
     bottom: 18px;
   }
@@ -1509,6 +1515,19 @@
   .s-text .eyebrow {
     font-size: 0.66rem;
   }
+  /* Read more / Show less — phone-only (revealed in the phone media query) */
+  .s-toggle {
+    display: none;
+    margin-top: 8px;
+    font-family: var(--font-util);
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
 
   /* gold-rimmed photo frame */
   .s-frame {
@@ -1625,13 +1644,19 @@
     stroke-dashoffset: 0;
     animation: none;
   }
+  .s-body,
+  .s-row {
+    transition: none;
+  }
 }
 
-/* phone: KEEP the alternating zig-zag, just scaled down (no single-column) */
+/* phone: balanced alternating zig-zag, with per-chapter expand-to-reflow */
 @media (max-width: 600px) {
   .s-row {
-    grid-template-columns: 1fr 38px 1fr;
-    margin-bottom: 30px;
+    grid-template-columns: 1fr 36px 1fr;
+    align-items: start;
+    margin-bottom: 26px;
+    transition: grid-template-columns 0.4s ease;
   }
   .s-row .s-text {
     padding-right: 8px;
@@ -1647,33 +1672,48 @@
     padding-left: 8px;
     padding-right: 0;
   }
+
   .s-text .eyebrow {
-    font-size: 0.5rem;
+    font-size: 0.55rem;
     letter-spacing: 0.14em;
   }
   .s-text h3 {
-    font-size: 1rem;
+    font-size: 1.15rem;
     margin: 0.1em 0 0.25em;
   }
   .s-text p {
-    font-size: 0.72rem;
-    line-height: 1.4;
+    font-size: 0.78rem;
+    line-height: 1.45;
   }
   .s-frame {
-    max-width: 92px;
-    padding: 4px 4px 5px;
+    max-width: 118px;
+    padding: 5px 5px 6px;
   }
   .s-medallion {
     width: 30px;
     height: 30px;
   }
   .s-medallion b {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
   }
   .s-ring {
     inset: -5px;
   }
-  /* same directions as desktop, shorter slide */
+
+  /* collapsed: clamp body to ~4 lines (matches photo height) + show toggle */
+  .s-body {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-height: 5.6em;
+    transition: max-height 0.45s ease;
+  }
+  .s-toggle {
+    display: inline-block;
+  }
+
+  /* reveal slide (shorter), same directions as desktop */
   .s-row .s-text.reveal {
     transform: translateX(-14px);
   }
@@ -1688,5 +1728,28 @@
   }
   .s-cell.reveal.in {
     transform: none;
+  }
+
+  /* EXPANDED: reflow full width — photo on top, medallion, then full text */
+  .s-row.s-open {
+    grid-template-columns: 1fr;
+  }
+  .s-row.s-open .s-photo,
+  .s-row.s-open .s-medallion,
+  .s-row.s-open .s-text {
+    order: 0;
+    text-align: center;
+    padding: 0;
+  }
+  .s-row.s-open .s-frame {
+    max-width: 58%;
+  }
+  .s-row.s-open .s-medallion {
+    margin: 12px auto;
+  }
+  .s-row.s-open .s-body {
+    -webkit-line-clamp: 999;
+    max-height: 90em;
+    overflow: visible;
   }
 }
