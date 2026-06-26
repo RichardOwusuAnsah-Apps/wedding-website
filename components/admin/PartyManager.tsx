@@ -145,30 +145,42 @@ function MemberEditor({
     <div className="bg-white border border-line rounded-md p-4 grid sm:grid-cols-[180px_1fr] gap-5">
       <div>
         {photo ? (
-          <ImageCropper
-            url={publicImageUrl("party-photos", photo)}
-            aspect={3 / 4}
-            value={crop}
-            onChange={setCrop}
-          />
+          <>
+            <ImageCropper
+              url={publicImageUrl("party-photos", photo)}
+              aspect={3 / 4}
+              value={crop}
+              onChange={setCrop}
+            />
+            <label className="mt-2 inline-block font-util text-[0.62rem] tracking-[0.14em] uppercase text-teal cursor-pointer">
+              Replace photo
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                disabled={uploading}
+                onChange={onFile}
+              />
+            </label>
+          </>
         ) : (
-          <div
-            className="w-full rounded border border-dashed border-gold bg-[rgba(196,154,72,0.06)] flex items-center justify-center text-muted text-sm"
+          <label
+            className="w-full rounded border border-dashed border-gold bg-[rgba(196,154,72,0.06)] hover:bg-[rgba(196,154,72,0.12)] transition flex flex-col items-center justify-center gap-1.5 text-muted cursor-pointer"
             style={{ aspectRatio: "3 / 4" }}
           >
-            No photo
-          </div>
+            <span className="text-2xl text-gold leading-none">+</span>
+            <span className="font-util text-[0.6rem] tracking-[0.14em] uppercase">
+              Click to upload
+            </span>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              disabled={uploading}
+              onChange={onFile}
+            />
+          </label>
         )}
-        <label className="mt-2 inline-block font-util text-[0.62rem] tracking-[0.14em] uppercase text-teal cursor-pointer">
-          {photo ? "Replace photo" : "Upload photo"}
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            disabled={uploading}
-            onChange={onFile}
-          />
-        </label>
         {uploading && <p className="form-note">Uploading…</p>}
       </div>
 
