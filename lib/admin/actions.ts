@@ -75,6 +75,27 @@ export async function saveRow(
   return { ok: true };
 }
 
+/** Persist a new order: sets sort_order = index for each id, in the given order. */
+export async function reorderRows(
+  table: string,
+  ids: string[],
+): Promise<Result> {
+  if (!DELETABLE.has(table)) return { error: "Unknown table" };
+  const supabase = await authedClient();
+  if (!supabase) return { error: "Not signed in" };
+
+  for (let i = 0; i < ids.length; i++) {
+    const { error } = await supabase
+      .from(table)
+      .update({ sort_order: i })
+      .eq("id", ids[i]);
+    if (error) return { error: error.message };
+  }
+  if (RESOURCE_BY_TABLE[table]) revalidatePath(`/admin/${RESOURCE_BY_TABLE[table].slug}`);
+  revalidatePath("/");
+  return { ok: true };
+}
+
 export async function deleteRow(table: string, id: string): Promise<Result> {
   if (!DELETABLE.has(table)) return { error: "Unknown table" };
   const supabase = await authedClient();
