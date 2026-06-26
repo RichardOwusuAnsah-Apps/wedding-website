@@ -648,14 +648,6 @@
     position: relative;
     overflow: hidden;
   }
-  .portrait::after {
-    content: "";
-    position: absolute;
-    inset: 8px;
-    border: 1px solid rgba(196, 154, 72, 0.5);
-    pointer-events: none;
-    z-index: 1;
-  }
   .portrait img {
     position: absolute;
     inset: 0;

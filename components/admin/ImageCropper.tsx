@@ -181,9 +181,6 @@ export function ImageCropper({
         className="absolute inset-0 w-full h-full pointer-events-none"
         style={focalStyle({ focal_x: fx, focal_y: fy, zoom })}
       />
-      <span className="absolute top-1.5 left-1.5 z-10 font-util text-[0.5rem] tracking-[0.1em] uppercase bg-white/85 text-muted px-1.5 py-0.5 rounded pointer-events-none">
-        Drag to position · scroll to zoom
-      </span>
       <div className="absolute bottom-1.5 right-1.5 z-10 flex gap-1">
         <button
           type="button"
