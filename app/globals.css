@@ -1522,41 +1522,50 @@
   }
 }
 @media (max-width: 760px) {
-  .hp2,
-  .hp3 {
-    display: none;
-  }
+  /* keep all four corner photos, just smaller and tucked in tighter */
   .hphoto {
-    width: 100px;
+    width: 96px;
   }
   .hp1 {
-    top: 84px;
-    left: 38px;
+    top: 80px;
+    left: 22px;
+  }
+  .hp2 {
+    top: 80px;
+    right: 22px;
+  }
+  .hp3 {
+    bottom: 74px;
+    left: 22px;
   }
   .hp4 {
-    bottom: 96px;
-    right: 38px;
+    bottom: 74px;
+    right: 22px;
   }
 }
 @media (max-width: 480px) {
-  /* two TOP corner photos (beside the nav); remove the bottom two */
+  /* all four corner photos, small and tucked into the corners */
   .hp1,
-  .hp2 {
-    display: block;
-  }
+  .hp2,
   .hp3,
   .hp4 {
-    display: none;
+    display: block;
   }
   .hphoto {
-    width: 70px;
+    width: 68px;
   }
   .hp1 {
-    inset: 78px auto auto 30px;
+    inset: 74px auto auto 12px;
   } /* top-left */
   .hp2 {
-    inset: 78px 30px auto auto;
+    inset: 74px 12px auto auto;
   } /* top-right */
+  .hp3 {
+    inset: auto auto 58px 12px;
+  } /* bottom-left */
+  .hp4 {
+    inset: auto 12px 58px auto;
+  } /* bottom-right */
   /* breathing room for the centered block */
   .hero .meta {
     letter-spacing: 0.2em;
