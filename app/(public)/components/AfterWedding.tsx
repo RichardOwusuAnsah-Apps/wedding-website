@@ -15,7 +15,16 @@ export function AfterWedding({
   photos: Photo[];
 }) {
   const target = new Date(weddingDate).getTime();
-  const open = Number.isFinite(target) ? Date.now() >= target : false;
+  const hasDate = Number.isFinite(target);
+  const open = hasDate ? Date.now() >= target : false;
+  const opensLabel = hasDate
+    ? `Opens after ${new Intl.DateTimeFormat("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        timeZone: "UTC",
+      }).format(target)}`
+    : "Opens after the wedding";
 
   return (
     <section className="after" id="after">
@@ -27,7 +36,7 @@ export function AfterWedding({
         </SectionHead>
 
         {!open ? (
-          <div className="after-locked reveal">Opens after 24 October 2026</div>
+          <div className="after-locked reveal">{opensLabel}</div>
         ) : photos.length === 0 ? (
           <div className="after-locked reveal">Photos coming soon</div>
         ) : (

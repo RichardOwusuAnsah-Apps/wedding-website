@@ -12,7 +12,7 @@ const LINKS: [href: string, label: string][] = [
 ];
 
 /** Sticky top nav: transparent at top, frosted once scrolled; mobile dropdown. */
-export function SiteNav() {
+export function SiteNav({ monogramSrc }: { monogramSrc?: string }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -26,8 +26,15 @@ export function SiteNav() {
   return (
     <>
       <header className={`site-nav${scrolled ? " scrolled" : ""}`}>
-        <a href="#top" className="brand" aria-label="Richie & Shula — home">
-          R <b>&amp;</b> S
+        <a href="#top" className="brand" aria-label="Home">
+          {monogramSrc ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={monogramSrc} alt="" className="brand-logo" />
+          ) : (
+            <>
+              R <b>&amp;</b> S
+            </>
+          )}
         </a>
         <nav className="nav-links" aria-label="Primary">
           {LINKS.map(([href, label]) => (

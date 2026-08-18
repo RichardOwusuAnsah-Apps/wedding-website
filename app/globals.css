@@ -318,6 +318,29 @@
     line-height: 1;
     color: var(--color-burgundy);
   }
+  /* custom uploaded monogram — shown as-is, no circle chrome */
+  .monogram-custom {
+    border: none;
+    background: none;
+    width: auto;
+    height: auto;
+    min-width: 108px;
+    border-radius: 0;
+  }
+  .monogram-img {
+    height: 116px;
+    width: auto;
+    max-width: 260px;
+    object-fit: contain;
+    display: block;
+  }
+  .brand-logo {
+    height: 34px;
+    width: auto;
+    max-width: 170px;
+    object-fit: contain;
+    display: block;
+  }
 
   /* ---- countdown ---- */
   .countdown {

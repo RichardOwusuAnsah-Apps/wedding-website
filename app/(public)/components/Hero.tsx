@@ -10,45 +10,51 @@ export function Hero({
   tagline,
   location,
   targetIso,
+  monogramSrc,
   featured = [],
 }: {
   coupleNames: string;
   tagline: string;
   location: string;
   targetIso: string;
+  monogramSrc?: string;
   featured?: Photo[];
 }) {
   const { first, second } = splitCoupleNames(coupleNames);
   const date = weddingDateParts(targetIso);
+  const hasMeta = Boolean(date || location);
 
   return (
     <section className="hero" id="top">
       <HeroPhotos photos={featured} />
-      <Monogram className="reveal" />
-      <div
-        className="eyebrow reveal"
-        style={{ fontSize: ".78rem", letterSpacing: ".4em", color: "var(--color-teal)" }}
-      >
-        {tagline}
-      </div>
+      <Monogram className="reveal" src={monogramSrc} />
+      {tagline && (
+        <div
+          className="eyebrow reveal"
+          style={{ fontSize: ".78rem", letterSpacing: ".4em", color: "var(--color-teal)" }}
+        >
+          {tagline}
+        </div>
+      )}
       <h1 className="reveal">
         {first}
         {second && <span className="amp">&amp;</span>}
         {second}
       </h1>
-      <div className="meta reveal">
-        {date && (
-          <>
-            <span>{date.weekday}</span>
-            <i />
-            <span>{date.long}</span>
-            <i />
-          </>
-        )}
-        <span>{location}</span>
-      </div>
-      <Countdown className="reveal" targetIso={targetIso} />
-      <div className="scrollcue">Scroll ↓</div>
+      {hasMeta && (
+        <div className="meta reveal">
+          {date && (
+            <>
+              <span>{date.weekday}</span>
+              <i />
+              <span>{date.long}</span>
+            </>
+          )}
+          {date && location && <i />}
+          {location && <span>{location}</span>}
+        </div>
+      )}
+      {date && <Countdown className="reveal" targetIso={targetIso} />}
     </section>
   );
 }

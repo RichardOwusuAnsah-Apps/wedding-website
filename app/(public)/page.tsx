@@ -14,6 +14,7 @@ import { AfterWedding } from "./components/AfterWedding";
 import { Guestbook } from "./components/Guestbook";
 import { Faq } from "./components/Faq";
 import { ThreadDivider } from "@/components/ui/ThreadDivider";
+import { publicImageUrl } from "@/lib/storage";
 import {
   getApprovedGuestbook,
   getEvents,
@@ -74,7 +75,12 @@ export default async function Home() {
     getFeaturedPhotos(),
   ]);
 
-  const weddingDate = settings.wedding_date || "2026-10-24T14:00:00";
+  // Only show what the couple has actually entered — no hard-coded fallbacks,
+  // so clearing a field in the admin removes it from the page.
+  const weddingDate = settings.wedding_date || "";
+  const monogramSrc = settings.monogram_path
+    ? publicImageUrl("gallery", settings.monogram_path)
+    : undefined;
   const deadlineNote = settings.rsvp_deadline
     ? `Kindly respond by ${formatDate(settings.rsvp_deadline)} so we can prepare to celebrate with you.`
     : undefined;
@@ -82,10 +88,11 @@ export default async function Home() {
   return (
     <>
       <Hero
-        coupleNames={settings.couple_names || "Richie & Shula"}
-        tagline={settings.tagline || "Timeless · Elegant · Effortless"}
-        location={settings.hero_location || "Maryland, USA"}
+        coupleNames={settings.couple_names || ""}
+        tagline={settings.tagline || ""}
+        location={settings.hero_location || ""}
         targetIso={weddingDate}
+        monogramSrc={monogramSrc}
         featured={featured}
       />
 

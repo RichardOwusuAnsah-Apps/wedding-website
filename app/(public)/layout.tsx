@@ -3,6 +3,7 @@ import { SiteNav } from "@/components/site/SiteNav";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { ScrollReveal } from "@/components/site/ScrollReveal";
 import { getSettings } from "@/lib/queries";
+import { publicImageUrl } from "@/lib/storage";
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSettings();
@@ -29,14 +30,19 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function PublicLayout({
+export default async function PublicLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const s = await getSettings();
+  const monogramSrc = s.monogram_path
+    ? publicImageUrl("gallery", s.monogram_path)
+    : undefined;
+
   return (
     <>
-      <SiteNav />
+      <SiteNav monogramSrc={monogramSrc} />
       <main>{children}</main>
       <SiteFooter />
       <ScrollReveal />

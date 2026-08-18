@@ -1,10 +1,31 @@
 import { ImageResponse } from "next/og";
+import { getSettings } from "@/lib/queries";
+import { publicImageUrl } from "@/lib/storage";
 
 export const size = { width: 64, height: 64 };
 export const contentType = "image/png";
+// read current settings each request so a newly-uploaded monogram takes effect
+export const dynamic = "force-dynamic";
 
-// Favicon — RS monogram on burgundy. Swap for the real rs-logo.svg later.
-export default function Icon() {
+// Favicon: the uploaded monogram if there is one, otherwise the "RS" placeholder.
+export default async function Icon() {
+  const s = await getSettings();
+  if (s.monogram_path) {
+    try {
+      const res = await fetch(publicImageUrl("gallery", s.monogram_path));
+      if (res.ok) {
+        return new Response(await res.arrayBuffer(), {
+          headers: {
+            "content-type": res.headers.get("content-type") ?? "image/png",
+            "cache-control": "public, max-age=3600",
+          },
+        });
+      }
+    } catch {
+      // fall through to the placeholder
+    }
+  }
+
   return new ImageResponse(
     (
       <div
