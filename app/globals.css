@@ -672,12 +672,12 @@
   .gallery {
     background: linear-gradient(180deg, #fbf7ef, var(--color-ivory));
   }
-  /* uniform square gallery — every tile is 1:1, 2 columns */
+  /* uniform square gallery — every tile is 1:1, 4 columns (matches the
+     wedding-party grid on laptops; steps down to 2 then 1 on smaller screens) */
   .grid-photos {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    max-width: 620px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
     margin: 0 auto;
   }
   .ph {

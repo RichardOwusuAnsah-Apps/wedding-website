@@ -21,12 +21,14 @@ export function ImageCropper({
   value,
   onChange,
   maxZoom = 4,
+  minZoom = 0.25,
 }: {
   url: string;
   aspect: number; // width / height
   value: Crop;
   onChange: (c: Crop) => void;
   maxZoom?: number;
+  minZoom?: number; // below 1 the whole image is shown (letterboxed); see focalStyle
 }) {
   const frameRef = useRef<HTMLDivElement>(null);
   const natural = useRef<{ w: number; h: number } | null>(null);
@@ -68,7 +70,7 @@ export function ImageCropper({
     const s = Math.max(Cw / nat.w, Ch / nat.h);
     const ox = Math.max(1, nat.w * s - Cw) + (zR.current - 1) * Cw;
     const oy = Math.max(1, nat.h * s - Ch) + (zR.current - 1) * Ch;
-    return { ox, oy };
+    return { ox: Math.max(1, ox), oy: Math.max(1, oy) };
   }
 
   function commit() {
@@ -109,8 +111,9 @@ export function ImageCropper({
     if (pointers.current.size >= 2 && pinchStart.current) {
       const [a, b] = [...pointers.current.values()];
       const dist = Math.hypot(a.x - b.x, a.y - b.y);
-      setZoom(clamp((pinchStart.current.zoom * dist) / pinchStart.current.dist, 1, maxZoom));
-    } else if (dragStart.current) {
+      setZoom(clamp((pinchStart.current.zoom * dist) / pinchStart.current.dist, minZoom, maxZoom));
+    } else if (dragStart.current && zR.current >= 1) {
+      // below 1 the image is smaller than the frame — nothing to pan
       const { ox, oy } = overflowPx();
       const dx = e.clientX - dragStart.current.x;
       const dy = e.clientY - dragStart.current.y;
@@ -133,13 +136,13 @@ export function ImageCropper({
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
-      setZoom((z) => clamp(z - e.deltaY * 0.0015, 1, maxZoom));
+      setZoom((z) => clamp(z - e.deltaY * 0.0015, minZoom, maxZoom));
       commitSoon();
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [maxZoom]);
+  }, [maxZoom, minZoom]);
 
   function onKeyDown(e: React.KeyboardEvent) {
     const step = 2;
@@ -148,9 +151,9 @@ export function ImageCropper({
       ArrowRight: () => setFx((v) => clamp(v + step, 0, 100)),
       ArrowUp: () => setFy((v) => clamp(v - step, 0, 100)),
       ArrowDown: () => setFy((v) => clamp(v + step, 0, 100)),
-      "+": () => setZoom((z) => clamp(z + 0.1, 1, maxZoom)),
-      "=": () => setZoom((z) => clamp(z + 0.1, 1, maxZoom)),
-      "-": () => setZoom((z) => clamp(z - 0.1, 1, maxZoom)),
+      "+": () => setZoom((z) => clamp(z + 0.1, minZoom, maxZoom)),
+      "=": () => setZoom((z) => clamp(z + 0.1, minZoom, maxZoom)),
+      "-": () => setZoom((z) => clamp(z - 0.1, minZoom, maxZoom)),
     };
     if (acts[e.key]) {
       acts[e.key]();
@@ -187,7 +190,7 @@ export function ImageCropper({
           aria-label="Zoom out"
           className="w-6 h-6 flex items-center justify-center rounded bg-white/90 border border-line text-burgundy leading-none"
           onClick={() => {
-            setZoom((z) => clamp(z - 0.2, 1, maxZoom));
+            setZoom((z) => clamp(z - 0.2, minZoom, maxZoom));
             commitSoon();
           }}
         >
@@ -198,7 +201,7 @@ export function ImageCropper({
           aria-label="Zoom in"
           className="w-6 h-6 flex items-center justify-center rounded bg-white/90 border border-line text-burgundy leading-none"
           onClick={() => {
-            setZoom((z) => clamp(z + 0.2, 1, maxZoom));
+            setZoom((z) => clamp(z + 0.2, minZoom, maxZoom));
             commitSoon();
           }}
         >

@@ -95,7 +95,7 @@ export interface Photo {
   is_featured: boolean; // shown in the hero "hanging photos"
   focal_x: number; // crop focal point X (0–100)
   focal_y: number; // crop focal point Y (0–100)
-  zoom: number; // crop zoom (1–3)
+  zoom: number; // crop zoom (<1 fits whole image, ≥1 cover crop)
   created_at: string;
 }
 
