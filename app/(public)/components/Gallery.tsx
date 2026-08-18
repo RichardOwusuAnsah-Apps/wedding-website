@@ -1,7 +1,6 @@
 import { SectionHead } from "@/components/ui/SectionHead";
 import type { Photo } from "@/lib/types";
-import { publicImageUrl } from "@/lib/storage";
-import { FramedPhoto } from "@/components/site/FramedPhoto";
+import { PhotoGallery } from "@/components/site/PhotoGallery";
 
 export function Gallery({ photos }: { photos: Photo[] }) {
   return (
@@ -15,18 +14,7 @@ export function Gallery({ photos }: { photos: Photo[] }) {
             Our engagement photos will appear here soon.
           </p>
         ) : (
-          <div className="grid-photos reveal">
-            {photos.map((p) => (
-              <div className="ph" key={p.id}>
-                <FramedPhoto
-                  src={publicImageUrl("gallery", p.storage_path)}
-                  alt={p.caption ?? "Pre-wedding photo"}
-                  crop={p}
-                />
-                {p.caption && <span className="lbl">{p.caption}</span>}
-              </div>
-            ))}
-          </div>
+          <PhotoGallery photos={photos} altFallback="Pre-wedding photo" />
         )}
       </div>
     </section>

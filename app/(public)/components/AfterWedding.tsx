@@ -1,7 +1,6 @@
 import { SectionHead } from "@/components/ui/SectionHead";
 import type { Photo } from "@/lib/types";
-import { publicImageUrl } from "@/lib/storage";
-import { FramedPhoto } from "@/components/site/FramedPhoto";
+import { PhotoGallery } from "@/components/site/PhotoGallery";
 
 /**
  * Post-wedding gallery. A simple date gate hides it until the wedding date
@@ -32,18 +31,7 @@ export function AfterWedding({
         ) : photos.length === 0 ? (
           <div className="after-locked reveal">Photos coming soon</div>
         ) : (
-          <div className="grid-photos reveal">
-            {photos.map((p) => (
-              <div className="ph" key={p.id}>
-                <FramedPhoto
-                  src={publicImageUrl("gallery", p.storage_path)}
-                  alt={p.caption ?? "Wedding photo"}
-                  crop={p}
-                />
-                {p.caption && <span className="lbl">{p.caption}</span>}
-              </div>
-            ))}
-          </div>
+          <PhotoGallery photos={photos} altFallback="Wedding photo" />
         )}
       </div>
     </section>
