@@ -43,6 +43,7 @@ function Person({ member }: { member: PartyMember }) {
             src={publicImageUrl("party-photos", member.photo_path)}
             alt={member.name}
             crop={member}
+            sizePx={640}
           />
         ) : (
           initials(member.name)

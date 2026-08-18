@@ -24,6 +24,7 @@ export function HeroPhotos({ photos }: { photos: Photo[] }) {
                     src={publicImageUrl("gallery", photo.storage_path)}
                     alt=""
                     crop={photo}
+                    sizePx={384}
                   />
                 ) : (
                   <>

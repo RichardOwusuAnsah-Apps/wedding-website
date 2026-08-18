@@ -1,8 +1,19 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { optimizedImageUrl } from "@/lib/storage";
 
 export type LightboxItem = { src: string; caption?: string | null; alt: string };
+
+// full-screen quality, but still resized/compressed from the raw original
+const lbSrc = (src: string) => optimizedImageUrl(src, 1920);
+
+// if the optimizer can't handle an image, show the original so it still appears
+function fallbackToOriginal(e: React.SyntheticEvent<HTMLImageElement>) {
+  const el = e.currentTarget;
+  const orig = el.dataset.orig;
+  if (orig && el.src !== orig) el.src = orig;
+}
 
 const SWIPE_THRESHOLD = 0.18; // fraction of viewport width to commit a swipe
 
@@ -175,17 +186,17 @@ export function Lightbox({
         {hasPrev && (
           <div className="lb-slide lb-prev">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={items[index - 1].src} alt="" draggable={false} />
+            <img src={lbSrc(items[index - 1].src)} data-orig={items[index - 1].src} alt="" draggable={false} decoding="async" onError={fallbackToOriginal} />
           </div>
         )}
         <div className="lb-slide lb-cur">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={current.src} alt={current.alt} draggable={false} />
+          <img src={lbSrc(current.src)} data-orig={current.src} alt={current.alt} draggable={false} decoding="async" onError={fallbackToOriginal} />
         </div>
         {hasNext && (
           <div className="lb-slide lb-next">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={items[index + 1].src} alt="" draggable={false} />
+            <img src={lbSrc(items[index + 1].src)} data-orig={items[index + 1].src} alt="" draggable={false} decoding="async" onError={fallbackToOriginal} />
           </div>
         )}
       </div>

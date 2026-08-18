@@ -29,6 +29,7 @@ export function StoryRow({ c, i }: { c: StoryChapter; i: number }) {
                 src={publicImageUrl("gallery", c.photo_path)}
                 alt={c.title}
                 crop={c}
+                sizePx={640}
               />
             ) : (
               <span className="s-ornament" aria-hidden>

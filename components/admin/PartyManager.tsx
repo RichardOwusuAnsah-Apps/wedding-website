@@ -52,6 +52,7 @@ function Thumb({ member }: { member: PartyMember }) {
           src={publicImageUrl("party-photos", member.photo_path)}
           alt=""
           crop={member}
+          sizePx={128}
         />
       ) : (
         <span className="font-display text-burgundy text-sm">

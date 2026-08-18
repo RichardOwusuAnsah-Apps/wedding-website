@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { coverMultiplier, focalStyle, spriteStyle } from "@/lib/image";
+import { optimizedImageUrl } from "@/lib/storage";
 
 export type Crop = { focal_x: number; focal_y: number; zoom: number };
 
@@ -31,6 +32,10 @@ export function ImageCropper({
   onChange: (c: Crop) => void;
   maxZoom?: number;
 }) {
+  // resized preview — far smaller than the original, plenty for framing;
+  // fall back to the original if the optimizer can't handle it
+  const [optFailed, setOptFailed] = useState(false);
+  const previewUrl = optFailed ? url : optimizedImageUrl(url, 1080);
   const frameRef = useRef<HTMLDivElement>(null);
   const [fx, setFx] = useState(value.focal_x ?? 50);
   const [fy, setFy] = useState(value.focal_y ?? 50);
@@ -63,8 +68,9 @@ export function ImageCropper({
       if (img.naturalWidth && img.naturalHeight)
         setImgAspect(img.naturalWidth / img.naturalHeight);
     };
-    img.src = url;
-  }, [url]);
+    img.onerror = () => setOptFailed(true);
+    img.src = previewUrl;
+  }, [previewUrl]);
 
   // keep the frame aspect in sync (in case CSS differs from the nominal aspect)
   useLayoutEffect(() => {
@@ -205,10 +211,11 @@ export function ImageCropper({
       {/* blurred backdrop — fills the frame when the photo is zoomed out */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={url}
+        src={previewUrl}
         alt=""
         aria-hidden
         draggable={false}
+        onError={() => setOptFailed(true)}
         className="absolute inset-0 w-full h-full pointer-events-none"
         style={{
           objectFit: "cover",
@@ -219,9 +226,10 @@ export function ImageCropper({
       {/* foreground photo */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={url}
+        src={previewUrl}
         alt=""
         draggable={false}
+        onError={() => setOptFailed(true)}
         className="absolute inset-0 w-full h-full pointer-events-none"
         style={fgStyle}
       />

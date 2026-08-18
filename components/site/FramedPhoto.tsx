@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import type { Focusable } from "@/lib/image";
 import { focalStyle, spriteStyle } from "@/lib/image";
+import { optimizedImageUrl } from "@/lib/storage";
 
 /**
  * Renders a photo inside its (position:relative, overflow:hidden) frame exactly
@@ -18,14 +19,20 @@ export function FramedPhoto({
   src,
   alt,
   crop,
+  sizePx = 828,
 }: {
   src: string;
   alt: string;
   crop: Focusable;
+  sizePx?: number; // rough displayed width; picks the optimizer size to fetch
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [imgAspect, setImgAspect] = useState<number | null>(null);
   const [frameAspect, setFrameAspect] = useState<number | null>(null);
+  // one resized copy, reused for both layers; fall back to the original if the
+  // optimizer can't handle it (e.g. a very large source) so nothing ever breaks
+  const [optFailed, setOptFailed] = useState(false);
+  const shownSrc = optFailed ? src : optimizedImageUrl(src, sizePx);
 
   useLayoutEffect(() => {
     const el = rootRef.current;
@@ -54,10 +61,13 @@ export function FramedPhoto({
       {/* blurred backdrop — fills the frame, hidden when the photo covers it */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={src}
+        src={shownSrc}
         alt=""
         aria-hidden
         draggable={false}
+        loading="lazy"
+        decoding="async"
+        onError={() => setOptFailed(true)}
         style={{
           position: "absolute",
           inset: 0,
@@ -72,9 +82,12 @@ export function FramedPhoto({
       {/* foreground photo */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={src}
+        src={shownSrc}
         alt={alt}
         draggable={false}
+        loading="lazy"
+        decoding="async"
+        onError={() => setOptFailed(true)}
         // ref catches already-cached images (whose onLoad fires before React
         // attaches the handler); onLoad catches the rest.
         ref={(el) => {
