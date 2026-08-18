@@ -5,7 +5,7 @@ import { useState, useTransition } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { saveRow, deleteRow, reorderRows } from "@/lib/admin/actions";
 import { publicImageUrl, initials } from "@/lib/storage";
-import { focalStyle } from "@/lib/image";
+import { FramedPhoto } from "@/components/site/FramedPhoto";
 import { ImageCropper, type Crop } from "@/components/admin/ImageCropper";
 import type { PartyMember } from "@/lib/types";
 
@@ -48,12 +48,10 @@ function Thumb({ member }: { member: PartyMember }) {
   return (
     <div className="relative w-12 h-16 shrink-0 rounded overflow-hidden border border-line bg-sand flex items-center justify-center">
       {member.photo_path ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+        <FramedPhoto
           src={publicImageUrl("party-photos", member.photo_path)}
           alt=""
-          className="absolute inset-0 w-full h-full"
-          style={focalStyle(member)}
+          crop={member}
         />
       ) : (
         <span className="font-display text-burgundy text-sm">

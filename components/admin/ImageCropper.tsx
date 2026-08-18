@@ -1,19 +1,22 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { focalStyle } from "@/lib/image";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { coverMultiplier, focalStyle, spriteStyle } from "@/lib/image";
 
 export type Crop = { focal_x: number; focal_y: number; zoom: number };
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 
+// Smallest on-screen size (as a fraction of the frame) the image may shrink to.
+const MIN_DISPLAY = 0.15;
+
 /**
- * Shared in-place crop editor. The photo IS the crop area (container = target
- * aspect, image covers it). Drag to move, wheel/pinch to zoom, +/- + arrow
- * keys as fallback; edges clamp so there's never a gap. Auto-saves on release.
- *
- * CRITICAL: the live preview renders via the SAME `focalStyle` helper the
- * public site uses, so what you frame here is what guests see at that aspect.
+ * In-place crop editor. What you frame here is exactly what the public site
+ * shows: the same `spriteStyle` model runs in both. zoom = 1 fills the frame
+ * (cover); zooming out shrinks the photo continuously — every size in between is
+ * reachable — revealing the whole image, with a blurred copy filling the frame
+ * behind it instead of blank space. Drag to move, wheel/pinch/±/arrows to adjust.
+ * Auto-saves on release.
  */
 export function ImageCropper({
   url,
@@ -21,20 +24,20 @@ export function ImageCropper({
   value,
   onChange,
   maxZoom = 4,
-  minZoom = 0.25,
 }: {
   url: string;
   aspect: number; // width / height
   value: Crop;
   onChange: (c: Crop) => void;
   maxZoom?: number;
-  minZoom?: number; // below 1 the whole image is shown (letterboxed); see focalStyle
 }) {
   const frameRef = useRef<HTMLDivElement>(null);
-  const natural = useRef<{ w: number; h: number } | null>(null);
   const [fx, setFx] = useState(value.focal_x ?? 50);
   const [fy, setFy] = useState(value.focal_y ?? 50);
   const [zoom, setZoom] = useState(value.zoom ?? 1);
+  // natural image aspect + measured frame aspect drive the framing math
+  const [imgAspect, setImgAspect] = useState<number | null>(null);
+  const [frameAspect, setFrameAspect] = useState<number>(aspect);
 
   const fxR = useRef(fx);
   const fyR = useRef(fy);
@@ -53,24 +56,41 @@ export function ImageCropper({
   const pinchStart = useRef<{ dist: number; zoom: number } | null>(null);
   const commitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // load the natural aspect
   useEffect(() => {
     const img = new window.Image();
     img.onload = () => {
-      natural.current = { w: img.naturalWidth, h: img.naturalHeight };
+      if (img.naturalWidth && img.naturalHeight)
+        setImgAspect(img.naturalWidth / img.naturalHeight);
     };
     img.src = url;
   }, [url]);
 
+  // keep the frame aspect in sync (in case CSS differs from the nominal aspect)
+  useLayoutEffect(() => {
+    const el = frameRef.current;
+    if (!el) return;
+    const measure = () => {
+      const r = el.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) setFrameAspect(r.width / r.height);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const K = imgAspect ? coverMultiplier(imgAspect, frameAspect) : 1;
+  const minZoom = MIN_DISPLAY / K; // reach the whole image (at 1/K) and smaller
+
+  // overflow of the displayed image beyond the frame, in px, per axis
   function overflowPx() {
     const el = frameRef.current;
-    const nat = natural.current;
-    if (!el || !nat) return { ox: 1, oy: 1 };
-    const Cw = el.clientWidth;
-    const Ch = el.clientHeight;
-    const s = Math.max(Cw / nat.w, Ch / nat.h);
-    const ox = Math.max(1, nat.w * s - Cw) + (zR.current - 1) * Cw;
-    const oy = Math.max(1, nat.h * s - Ch) + (zR.current - 1) * Ch;
-    return { ox: Math.max(1, ox), oy: Math.max(1, oy) };
+    if (!el || !imgAspect) return { ox: 0, oy: 0 };
+    const S = zR.current * K;
+    const ox = Math.max(0, S * Math.min(1, imgAspect / frameAspect) - 1) * el.clientWidth;
+    const oy = Math.max(0, S * Math.min(1, frameAspect / imgAspect) - 1) * el.clientHeight;
+    return { ox, oy };
   }
 
   function commit() {
@@ -94,7 +114,7 @@ export function ImageCropper({
   }
 
   function onPointerDown(e: React.PointerEvent) {
-    if ((e.target as HTMLElement).closest("button")) return; // let +/- buttons work
+    if ((e.target as HTMLElement).closest("button")) return; // let ± buttons work
     (e.currentTarget as Element).setPointerCapture(e.pointerId);
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pointers.current.size === 1) {
@@ -112,13 +132,13 @@ export function ImageCropper({
       const [a, b] = [...pointers.current.values()];
       const dist = Math.hypot(a.x - b.x, a.y - b.y);
       setZoom(clamp((pinchStart.current.zoom * dist) / pinchStart.current.dist, minZoom, maxZoom));
-    } else if (dragStart.current && zR.current >= 1) {
-      // below 1 the image is smaller than the frame — nothing to pan
+    } else if (dragStart.current) {
       const { ox, oy } = overflowPx();
       const dx = e.clientX - dragStart.current.x;
       const dy = e.clientY - dragStart.current.y;
-      setFx(clamp(dragStart.current.fx - (dx / ox) * 100, 0, 100));
-      setFy(clamp(dragStart.current.fy - (dy / oy) * 100, 0, 100));
+      // pan only along axes that actually overflow the frame
+      if (ox > 0) setFx(clamp(dragStart.current.fx - (dx / ox) * 100, 0, 100));
+      if (oy > 0) setFy(clamp(dragStart.current.fy - (dy / oy) * 100, 0, 100));
     }
   }
   function onPointerUp(e: React.PointerEvent) {
@@ -136,7 +156,7 @@ export function ImageCropper({
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
-      setZoom((z) => clamp(z - e.deltaY * 0.0015, minZoom, maxZoom));
+      setZoom((z) => clamp(z - e.deltaY * 0.0015 * z, minZoom, maxZoom));
       commitSoon();
     };
     el.addEventListener("wheel", onWheel, { passive: false });
@@ -146,14 +166,15 @@ export function ImageCropper({
 
   function onKeyDown(e: React.KeyboardEvent) {
     const step = 2;
+    const zStep = () => zR.current * 0.08; // proportional, so ± feel even at any zoom
     const acts: Record<string, () => void> = {
       ArrowLeft: () => setFx((v) => clamp(v - step, 0, 100)),
       ArrowRight: () => setFx((v) => clamp(v + step, 0, 100)),
       ArrowUp: () => setFy((v) => clamp(v - step, 0, 100)),
       ArrowDown: () => setFy((v) => clamp(v + step, 0, 100)),
-      "+": () => setZoom((z) => clamp(z + 0.1, minZoom, maxZoom)),
-      "=": () => setZoom((z) => clamp(z + 0.1, minZoom, maxZoom)),
-      "-": () => setZoom((z) => clamp(z - 0.1, minZoom, maxZoom)),
+      "+": () => setZoom((z) => clamp(z + zStep(), minZoom, maxZoom)),
+      "=": () => setZoom((z) => clamp(z + zStep(), minZoom, maxZoom)),
+      "-": () => setZoom((z) => clamp(z - zStep(), minZoom, maxZoom)),
     };
     if (acts[e.key]) {
       acts[e.key]();
@@ -161,6 +182,11 @@ export function ImageCropper({
       commitSoon();
     }
   }
+
+  const ready = imgAspect != null;
+  const fgStyle = ready
+    ? spriteStyle({ focal_x: fx, focal_y: fy, zoom }, imgAspect, frameAspect)
+    : focalStyle({ focal_x: fx, focal_y: fy, zoom });
 
   return (
     <div
@@ -176,13 +202,28 @@ export function ImageCropper({
       onPointerCancel={onPointerUp}
       onKeyDown={onKeyDown}
     >
+      {/* blurred backdrop — fills the frame when the photo is zoomed out */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={url}
+        alt=""
+        aria-hidden
+        draggable={false}
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        style={{
+          objectFit: "cover",
+          filter: "blur(18px) brightness(0.96)",
+          transform: "scale(1.12)",
+        }}
+      />
+      {/* foreground photo */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={url}
         alt=""
         draggable={false}
         className="absolute inset-0 w-full h-full pointer-events-none"
-        style={focalStyle({ focal_x: fx, focal_y: fy, zoom })}
+        style={fgStyle}
       />
       <div className="absolute bottom-1.5 right-1.5 z-10 flex gap-1">
         <button
@@ -190,7 +231,7 @@ export function ImageCropper({
           aria-label="Zoom out"
           className="w-6 h-6 flex items-center justify-center rounded bg-white/90 border border-line text-burgundy leading-none"
           onClick={() => {
-            setZoom((z) => clamp(z - 0.2, minZoom, maxZoom));
+            setZoom((z) => clamp(z - z * 0.12, minZoom, maxZoom));
             commitSoon();
           }}
         >
@@ -201,7 +242,7 @@ export function ImageCropper({
           aria-label="Zoom in"
           className="w-6 h-6 flex items-center justify-center rounded bg-white/90 border border-line text-burgundy leading-none"
           onClick={() => {
-            setZoom((z) => clamp(z + 0.2, minZoom, maxZoom));
+            setZoom((z) => clamp(z + z * 0.12, minZoom, maxZoom));
             commitSoon();
           }}
         >

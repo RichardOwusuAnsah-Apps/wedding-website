@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import type { PartyMember } from "@/lib/types";
 import { initials, publicImageUrl } from "@/lib/storage";
-import { focalStyle } from "@/lib/image";
+import { FramedPhoto } from "@/components/site/FramedPhoto";
 
 type Group = { key: string; title: string; sub: string };
 
@@ -40,12 +39,10 @@ function Person({ member }: { member: PartyMember }) {
     <div className="person">
       <div className="portrait">
         {member.photo_path ? (
-          <Image
+          <FramedPhoto
             src={publicImageUrl("party-photos", member.photo_path)}
             alt={member.name}
-            fill
-            sizes="(max-width: 900px) 50vw, 25vw"
-            style={focalStyle(member)}
+            crop={member}
           />
         ) : (
           initials(member.name)

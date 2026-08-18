@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import type { StoryChapter } from "@/lib/types";
 import { publicImageUrl } from "@/lib/storage";
-import { focalStyle } from "@/lib/image";
+import { FramedPhoto } from "@/components/site/FramedPhoto";
 
 const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 
@@ -26,12 +25,10 @@ export function StoryRow({ c, i }: { c: StoryChapter; i: number }) {
         <div className="s-frame">
           <div className="s-img">
             {c.photo_path ? (
-              <Image
+              <FramedPhoto
                 src={publicImageUrl("gallery", c.photo_path)}
                 alt={c.title}
-                fill
-                sizes="(max-width: 600px) 45vw, 300px"
-                style={focalStyle(c)}
+                crop={c}
               />
             ) : (
               <span className="s-ornament" aria-hidden>

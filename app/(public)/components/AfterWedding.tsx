@@ -1,8 +1,7 @@
-import Image from "next/image";
 import { SectionHead } from "@/components/ui/SectionHead";
 import type { Photo } from "@/lib/types";
 import { publicImageUrl } from "@/lib/storage";
-import { focalStyle } from "@/lib/image";
+import { FramedPhoto } from "@/components/site/FramedPhoto";
 
 /**
  * Post-wedding gallery. A simple date gate hides it until the wedding date
@@ -36,12 +35,10 @@ export function AfterWedding({
           <div className="grid-photos reveal">
             {photos.map((p) => (
               <div className="ph" key={p.id}>
-                <Image
+                <FramedPhoto
                   src={publicImageUrl("gallery", p.storage_path)}
                   alt={p.caption ?? "Wedding photo"}
-                  fill
-                  sizes="(max-width: 900px) 50vw, 25vw"
-                  style={focalStyle(p)}
+                  crop={p}
                 />
                 {p.caption && <span className="lbl">{p.caption}</span>}
               </div>

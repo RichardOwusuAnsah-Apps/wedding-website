@@ -45,8 +45,8 @@ function sanitize(table: string, data: Record<string, unknown>) {
   if (res.fields.some((f) => f.type === "image")) {
     out.focal_x = Math.round(clampNum(data.focal_x, 0, 100, 50));
     out.focal_y = Math.round(clampNum(data.focal_y, 0, 100, 50));
-    // floor below 1 so admins can zoom out to fit the whole image (see focalStyle)
-    out.zoom = clampNum(data.zoom, 0.25, 4, 1);
+    // wide range: well below 1 to fit/shrink the whole image, above 1 to zoom in
+    out.zoom = clampNum(data.zoom, 0.05, 6, 1);
   }
   return out;
 }

@@ -1,7 +1,6 @@
-import Image from "next/image";
 import type { Photo } from "@/lib/types";
 import { publicImageUrl } from "@/lib/storage";
-import { focalStyle } from "@/lib/image";
+import { FramedPhoto } from "@/components/site/FramedPhoto";
 
 const SLOTS = ["hp1", "hp2", "hp3", "hp4"] as const;
 
@@ -21,12 +20,10 @@ export function HeroPhotos({ photos }: { photos: Photo[] }) {
             <div className="frame">
               <div className="inner">
                 {photo ? (
-                  <Image
+                  <FramedPhoto
                     src={publicImageUrl("gallery", photo.storage_path)}
                     alt=""
-                    fill
-                    sizes="138px"
-                    style={focalStyle(photo)}
+                    crop={photo}
                   />
                 ) : (
                   <>
