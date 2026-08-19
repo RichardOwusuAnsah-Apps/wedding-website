@@ -172,12 +172,12 @@
   }
   .nav-rsvp {
     font-family: var(--font-util);
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     border: 1px solid var(--color-gold);
     color: var(--color-burgundy);
-    padding: 9px 18px;
+    padding: 6px 13px;
     border-radius: 2px;
     transition: 0.3s;
   }
@@ -249,7 +249,8 @@
   .hero::after {
     content: "";
     position: absolute;
-    inset: 22px;
+    /* top pushed below the fixed nav so the frame never crosses its text */
+    inset: 88px 22px 22px;
     border: 1px solid var(--color-line);
     pointer-events: none;
   }
@@ -1524,7 +1525,10 @@
 @media (max-width: 760px) {
   /* keep all four corner photos, just smaller and tucked in tighter */
   .hphoto {
-    width: 96px;
+    width: 106px;
+  }
+  .hphoto .frame {
+    padding: 6px 6px 11px;
   }
   .hp1 {
     top: 80px;
@@ -1544,7 +1548,7 @@
   }
 }
 @media (max-width: 480px) {
-  /* all four corner photos, small and tucked into the corners */
+  /* all four corner photos, tucked into the corners */
   .hp1,
   .hp2,
   .hp3,
@@ -1552,7 +1556,11 @@
     display: block;
   }
   .hphoto {
-    width: 68px;
+    width: 90px;
+  }
+  /* thinner border so the photo fills more of the card */
+  .hphoto .frame {
+    padding: 4px 4px 8px;
   }
   .hp1 {
     inset: 74px auto auto 12px;
@@ -1561,10 +1569,10 @@
     inset: 74px 12px auto auto;
   } /* top-right */
   .hp3 {
-    inset: auto auto 58px 12px;
+    inset: auto auto 54px 12px;
   } /* bottom-left */
   .hp4 {
-    inset: auto 12px 58px auto;
+    inset: auto 12px 54px auto;
   } /* bottom-right */
   /* breathing room for the centered block */
   .hero .meta {
