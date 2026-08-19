@@ -18,12 +18,17 @@ export interface EventRow {
   id: string;
   day_label: string | null;
   title: string;
-  side_color: string | null; // 'burgundy' | 'teal'
+  side_color: string | null; // 'burgundy' | 'teal' | 'gold'
   event_date: string | null;
   event_time: string | null;
   venue_name: string | null;
-  attire: string | null;
+  map_url: string | null; // clickable Google Maps link for the venue
+  attire: string | null; // shown as "Dress Code"
   description: string | null;
+  photo_path: string | null; // per-card image (gallery bucket)
+  focal_x: number;
+  focal_y: number;
+  zoom: number;
   sort_order: number;
 }
 

@@ -30,14 +30,20 @@ create table if not exists events (
   id uuid primary key default gen_random_uuid(),
   day_label text,                       -- 'Day One'
   title text not null,                  -- 'Traditional Ceremony'
-  side_color text default 'burgundy',   -- 'burgundy' | 'teal'
+  side_color text default 'burgundy',   -- 'burgundy' | 'teal' | 'gold'
   event_date text,
   event_time text,
   venue_name text,
-  attire text,
+  attire text,                          -- shown as "Dress Code"
   description text,
   sort_order int default 0
 );
+-- clickable venue map link + per-card image (focal point + zoom)
+alter table events add column if not exists map_url text;
+alter table events add column if not exists photo_path text;
+alter table events add column if not exists focal_x int default 50;
+alter table events add column if not exists focal_y int default 50;
+alter table events add column if not exists zoom numeric default 1;
 
 create table if not exists wedding_party (
   id uuid primary key default gen_random_uuid(),

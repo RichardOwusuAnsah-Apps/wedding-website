@@ -6,7 +6,6 @@ export const ADMIN_NAV_ITEMS: [href: string, label: string][] = [
   ["/admin/events", "Celebrations"],
   ["/admin/party", "Wedding Party"],
   ["/admin/gallery", "Gallery"],
-  ["/admin/venues", "Venues"],
   ["/admin/hotels", "Travel & Stay"],
   ["/admin/family", "Family"],
   ["/admin/vendors", "Vendors"],

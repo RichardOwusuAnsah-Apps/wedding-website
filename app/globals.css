@@ -530,9 +530,9 @@
   /* ---- celebrations ---- */
   .cele-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 30px;
-    max-width: 980px;
+    max-width: 1180px;
     margin: 0 auto;
   }
   .cele {
@@ -547,6 +547,9 @@
   }
   .cele.white {
     background: linear-gradient(160deg, var(--color-teal), var(--color-teal-deep));
+  }
+  .cele.gold {
+    background: linear-gradient(160deg, #a9803a, #5c421c);
   }
   .cele .tag {
     font-family: var(--font-util);
@@ -582,6 +585,21 @@
     font-size: 0.66rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
+    white-space: nowrap;
+  }
+  /* clickable venue → opens the map */
+  .cele .det .cele-venue {
+    color: #fff;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(226, 197, 136, 0.5);
+    transition: 0.2s;
+  }
+  .cele .det .cele-venue:hover {
+    color: var(--color-gold-light);
+    border-bottom-color: var(--color-gold-light);
+  }
+  .cele-desc {
+    opacity: 0.9;
   }
   .cele .ornament {
     position: absolute;
@@ -598,6 +616,26 @@
     inset: 22px;
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 50%;
+  }
+  /* per-card image in the top-right corner (admin-cropped) */
+  .cele-photo {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    width: 96px;
+    aspect-ratio: 4 / 5;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 3px solid rgba(255, 255, 255, 0.92);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+    background: rgba(255, 255, 255, 0.12);
+    z-index: 2;
+  }
+  /* keep the heading text clear of the corner photo */
+  .cele-head.has-photo .tag,
+  .cele-head.has-photo h3,
+  .cele-head.has-photo .cele-desc {
+    padding-right: 100px;
   }
 
   /* ---- wedding party ---- */
