@@ -650,12 +650,17 @@
     text-transform: uppercase;
     margin-bottom: 34px;
   }
+  /* centered flex row so partial groups (e.g. one Best Man, two Maids of
+     Honour) sit in the middle instead of hugging the left; full rows of four
+     still fill the width */
   .people {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 22px;
   }
   .person {
+    width: calc((100% - 70px) / 4); /* four per row */
     text-align: center;
   }
   .portrait {
@@ -1352,9 +1357,11 @@
   .dress-cols {
     grid-template-columns: 1fr;
   }
-  .people,
   .vend {
     grid-template-columns: 1fr 1fr;
+  }
+  .person {
+    width: calc((100% - 24px) / 2); /* two per row */
   }
   .grid-photos {
     grid-template-columns: 1fr 1fr;

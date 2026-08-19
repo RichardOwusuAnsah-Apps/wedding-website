@@ -16,16 +16,15 @@ function fallbackToOriginal(e: React.SyntheticEvent<HTMLImageElement>) {
 }
 
 const SWIPE_THRESHOLD = 0.18; // fraction of viewport width to commit a swipe
+const MAX_SCALE = 4;
+const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 
 /**
  * Fullscreen photo viewer. The whole (uncropped) image is shown on a dark
- * backdrop; navigate by swipe (touch), on-screen arrows, or ← / → keys; close
- * with the ✕, a backdrop tap, or Esc. Stops at the first/last photo. Body
- * scroll is locked and focus is trapped while open. Reusable across galleries.
- *
- * A three-slide track (previous / current / next) gives a smooth slide and
- * preloads the neighbours so navigation feels instant. prefers-reduced-motion
- * cuts instead of sliding.
+ * backdrop. Navigate by swipe / arrows / ← → keys; pinch (two fingers) or
+ * double-tap to zoom, then drag to pan; close with ✕, a backdrop tap, or Esc.
+ * Body scroll is locked and focus is trapped while open. Reusable across
+ * galleries; a three-slide track preloads the neighbours for instant swiping.
  */
 export function Lightbox({
   items,
@@ -40,14 +39,31 @@ export function Lightbox({
 }) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
-  const [dx, setDx] = useState(0); // live horizontal offset (px)
+  const [dx, setDx] = useState(0); // live horizontal swipe offset (px)
   const [anim, setAnim] = useState(false);
+  // zoom state for the current photo
+  const [scale, setScale] = useState(1);
+  const [tx, setTx] = useState(0);
+  const [ty, setTy] = useState(0);
+  const [zAnim, setZAnim] = useState(false);
+
   const reduced = useRef(false);
-  const drag = useRef<{ x: number; active: boolean } | null>(null);
-  const moved = useRef(false); // did the last pointer interaction drag?
+  const pointers = useRef(new Map<number, { x: number; y: number }>());
+  const pinch = useRef<{ dist: number; scale: number } | null>(null);
+  const pan = useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
+  const swipe = useRef<{ x: number } | null>(null);
+  const moved = useRef(false);
+  const lastTap = useRef(0);
+  const navTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const animating = useRef(false);
+  const dxR = useRef(0); // synchronous mirror of the swipe offset
+  // latest zoom values for use inside pointer handlers
+  const sR = useRef(scale);
+  sR.current = scale;
 
   const hasPrev = index > 0;
   const hasNext = index < items.length - 1;
+  const zoomed = scale > 1.02;
 
   useEffect(() => {
     reduced.current =
@@ -64,37 +80,50 @@ export function Lightbox({
     };
   }, []);
 
-  // focus the dialog on open
   useEffect(() => {
     closeRef.current?.focus();
   }, []);
 
   const go = useCallback(
     (dir: -1 | 1) => {
+        if (animating.current) return; // ignore input mid-transition
       if (dir === -1 && !hasPrev) return;
       if (dir === 1 && !hasNext) return;
+      // leaving this photo — drop any zoom so the next one starts fit-to-screen
+      setScale(1);
+      setTx(0);
+      setTy(0);
       if (reduced.current) {
         onIndex(index + dir);
         setDx(0);
         return;
       }
       const w = window.innerWidth;
+      animating.current = true;
       setAnim(true);
-      setDx(dir === 1 ? -w : w); // slide out toward the incoming photo
+      setDx(dir === 1 ? -w : w);
+      // commit on a timer rather than transitionend (which can miss when the
+      // transition is enabled in the same frame as the transform change)
+      if (navTimer.current) clearTimeout(navTimer.current);
+      navTimer.current = setTimeout(() => {
+        onIndex(index + dir);
+        setAnim(false);
+        setDx(0);
+        animating.current = false;
+        navTimer.current = null;
+      }, 300);
     },
     [hasPrev, hasNext, index, onIndex],
   );
 
-  // when the slide-out animation ends, commit the index and snap back
-  function onTrackTransitionEnd() {
-    if (!anim) return;
-    if (dx < 0 && hasNext) onIndex(index + 1);
-    else if (dx > 0 && hasPrev) onIndex(index - 1);
-    setAnim(false);
-    setDx(0);
-  }
+  // clear a pending navigation timer if the lightbox unmounts mid-transition
+  useEffect(() => {
+    return () => {
+      if (navTimer.current) clearTimeout(navTimer.current);
+    };
+  }, []);
 
-  // keyboard: arrows navigate, Esc closes, Tab is trapped
+  // keyboard: arrows navigate, Esc closes, Tab trapped
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") {
@@ -108,7 +137,7 @@ export function Lightbox({
         go(1);
       } else if (e.key === "Tab") {
         const focusables = overlayRef.current?.querySelectorAll<HTMLElement>(
-          'button:not([disabled])',
+          "button:not([disabled])",
         );
         if (!focusables || focusables.length === 0) return;
         const first = focusables[0];
@@ -126,30 +155,104 @@ export function Lightbox({
     return () => window.removeEventListener("keydown", onKey);
   }, [go, onClose]);
 
-  // swipe (touch / pointer drag)
+  function twoFingerDist() {
+    const [a, b] = [...pointers.current.values()];
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  }
+
   function onPointerDown(e: React.PointerEvent) {
     if ((e.target as HTMLElement).closest("button")) return;
-    drag.current = { x: e.clientX, active: true };
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     moved.current = false;
     setAnim(false);
-  }
-  function onPointerMove(e: React.PointerEvent) {
-    if (!drag.current?.active) return;
-    let d = e.clientX - drag.current.x;
-    if (Math.abs(d) > 6) moved.current = true;
-    if ((d > 0 && !hasPrev) || (d < 0 && !hasNext)) d *= 0.25; // resist at ends
-    setDx(d);
-  }
-  function onPointerUp() {
-    if (!drag.current?.active) return;
-    drag.current = null;
-    const w = window.innerWidth;
-    if (dx <= -w * SWIPE_THRESHOLD && hasNext) go(1);
-    else if (dx >= w * SWIPE_THRESHOLD && hasPrev) go(-1);
-    else {
-      setAnim(true);
-      setDx(0); // snap back
+    setZAnim(false);
+    if (pointers.current.size === 2) {
+      pinch.current = { dist: twoFingerDist(), scale: sR.current };
+      swipe.current = null;
+      pan.current = null;
+    } else if (pointers.current.size === 1) {
+      if (sR.current > 1.02) pan.current = { x: e.clientX, y: e.clientY, tx, ty };
+      else swipe.current = { x: e.clientX };
     }
+  }
+
+  function onPointerMove(e: React.PointerEvent) {
+    if (!pointers.current.has(e.pointerId)) return;
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (pointers.current.size >= 2 && pinch.current) {
+      moved.current = true;
+      setScale(clamp((pinch.current.scale * twoFingerDist()) / pinch.current.dist, 1, MAX_SCALE));
+    } else if (pointers.current.size === 1 && pan.current) {
+      const dxp = e.clientX - pan.current.x;
+      const dyp = e.clientY - pan.current.y;
+      if (Math.abs(dxp) > 4 || Math.abs(dyp) > 4) moved.current = true;
+      const maxX = ((sR.current - 1) * window.innerWidth) / 2;
+      const maxY = ((sR.current - 1) * window.innerHeight) / 2;
+      setTx(clamp(pan.current.tx + dxp, -maxX, maxX));
+      setTy(clamp(pan.current.ty + dyp, -maxY, maxY));
+    } else if (pointers.current.size === 1 && swipe.current) {
+      let d = e.clientX - swipe.current.x;
+      if (Math.abs(d) > 6) moved.current = true;
+      if ((d > 0 && !hasPrev) || (d < 0 && !hasNext)) d *= 0.25;
+      dxR.current = d;
+      setDx(d);
+    }
+  }
+
+  function onPointerUp(e: React.PointerEvent) {
+    const tapOnImg =
+      !moved.current && (e.target as HTMLElement)?.tagName === "IMG";
+    const wasSwipe = swipe.current !== null;
+    pointers.current.delete(e.pointerId);
+    if (pointers.current.size < 2) pinch.current = null;
+    if (pointers.current.size > 0) return;
+
+    // snap zoom back to 1 when it has drifted below threshold
+    if (sR.current <= 1.02) {
+      setZAnim(true);
+      setScale(1);
+      setTx(0);
+      setTy(0);
+    }
+
+    // commit a swipe only when not zoomed — read the ref, not the async state
+    if (wasSwipe && sR.current <= 1.02) {
+      const w = window.innerWidth;
+      const d = dxR.current;
+      if (d <= -w * SWIPE_THRESHOLD && hasNext) go(1);
+      else if (d >= w * SWIPE_THRESHOLD && hasPrev) go(-1);
+      else {
+        setAnim(true);
+        setDx(0);
+      }
+    } else if (wasSwipe) {
+      setDx(0);
+    }
+    dxR.current = 0;
+
+    // double-tap to toggle zoom
+    if (tapOnImg) {
+      const now = Date.now();
+      if (now - lastTap.current < 300) {
+        setZAnim(true);
+        if (sR.current > 1.02) {
+          setScale(1);
+          setTx(0);
+          setTy(0);
+        } else {
+          setScale(2.5);
+          setTx(0);
+          setTy(0);
+        }
+        lastTap.current = 0;
+      } else {
+        lastTap.current = now;
+      }
+    }
+
+    swipe.current = null;
+    pan.current = null;
   }
 
   // a plain tap on the dark area (not the photo, not a control) closes
@@ -161,6 +264,7 @@ export function Lightbox({
   }
 
   const current = items[index];
+  const curTransform = `translate(${tx}px, ${ty}px) scale(${scale})`;
 
   return (
     <div
@@ -178,10 +282,9 @@ export function Lightbox({
       <div
         className="lb-track"
         style={{
-          transform: `translateX(${dx}px)`,
+          transform: `translateX(${zoomed ? 0 : dx}px)`,
           transition: anim ? "transform 0.3s cubic-bezier(0.2,0.7,0.2,1)" : "none",
         }}
-        onTransitionEnd={onTrackTransitionEnd}
       >
         {hasPrev && (
           <div className="lb-slide lb-prev">
@@ -191,7 +294,19 @@ export function Lightbox({
         )}
         <div className="lb-slide lb-cur">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={lbSrc(current.src)} data-orig={current.src} alt={current.alt} draggable={false} decoding="async" onError={fallbackToOriginal} />
+          <img
+            src={lbSrc(current.src)}
+            data-orig={current.src}
+            alt={current.alt}
+            draggable={false}
+            decoding="async"
+            onError={fallbackToOriginal}
+            style={{
+              transform: curTransform,
+              transition: zAnim ? "transform 0.25s ease" : "none",
+              cursor: zoomed ? "grab" : "auto",
+            }}
+          />
         </div>
         {hasNext && (
           <div className="lb-slide lb-next">
