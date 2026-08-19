@@ -134,7 +134,7 @@ create table if not exists rsvps (
   full_name text not null,
   email text,
   attending boolean,
-  events_attending text,                -- 'traditional' | 'white' | 'both'
+  events_attending text,                -- 'traditional' | 'wedding' | 'reception' | 'all'
   party_size int default 1,
   meal_preference text,
   message text,

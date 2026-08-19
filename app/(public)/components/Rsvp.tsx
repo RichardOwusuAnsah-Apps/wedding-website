@@ -4,14 +4,13 @@ import { useState } from "react";
 import { SectionHead } from "@/components/ui/SectionHead";
 
 type Attending = "yes" | "no";
-type Which = "traditional" | "white" | "both";
+type Which = "traditional" | "wedding" | "reception" | "all";
 type Status = "idle" | "submitting" | "error";
 
 export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
   const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
   const [attending, setAttending] = useState<Attending>("yes");
-  const [which, setWhich] = useState<Which>("both");
+  const [which, setWhich] = useState<Which>("all");
   const [partySize, setPartySize] = useState(1);
   const [meal, setMeal] = useState("Standard");
 
@@ -35,7 +34,6 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           full_name: fullName.trim(),
-          email: email.trim() || null,
           attending: attending === "yes",
           events_attending: which,
           party_size: partySize,
@@ -84,17 +82,6 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
             </div>
 
             <div className="field">
-              <label htmlFor="rsvp-email">Email</label>
-              <input
-                id="rsvp-email"
-                type="email"
-                placeholder="you@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-
-            <div className="field">
               <label>Will you attend?</label>
               <div className="seg">
                 <button
@@ -120,8 +107,9 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
                 {(
                   [
                     ["traditional", "Traditional"],
-                    ["white", "White Wedding"],
-                    ["both", "Both"],
+                    ["wedding", "Wedding"],
+                    ["reception", "Reception"],
+                    ["all", "All"],
                   ] as [Which, string][]
                 ).map(([key, label]) => (
                   <button

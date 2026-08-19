@@ -12,9 +12,10 @@ interface RsvpInput {
 }
 
 const EVENT_LABEL: Record<string, string> = {
-  traditional: "Traditional Ceremony",
-  white: "White Wedding",
-  both: "Both celebrations",
+  traditional: "Traditional",
+  wedding: "Wedding",
+  reception: "Reception",
+  all: "All celebrations",
 };
 
 /**
@@ -71,7 +72,6 @@ async function notify(row: RsvpInput) {
     ["Celebrations", row.events_attending ? (EVENT_LABEL[row.events_attending] ?? row.events_attending) : "—"],
     ["Guests", String(row.party_size)],
     ["Meal", row.meal_preference ?? "—"],
-    ["Email", row.email ?? "—"],
     ["Message", row.message ?? "—"],
   ];
 
