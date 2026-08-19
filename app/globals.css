@@ -1548,6 +1548,10 @@
   }
 }
 @media (max-width: 480px) {
+  /* no decorative frame border on phones */
+  .hero::after {
+    display: none;
+  }
   /* all four corner photos, tucked into the corners */
   .hp1,
   .hp2,
