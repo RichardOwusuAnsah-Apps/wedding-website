@@ -4,7 +4,6 @@ import { Celebrations } from "./components/Celebrations";
 import { Party } from "./components/Party";
 import { Gallery } from "./components/Gallery";
 import { Travel } from "./components/Travel";
-import { Family } from "./components/Family";
 import { Vendors } from "./components/Vendors";
 import { Rsvp } from "./components/Rsvp";
 import { Registry } from "./components/Registry";
@@ -16,7 +15,6 @@ import { publicImageUrl } from "@/lib/storage";
 import {
   getApprovedGuestbook,
   getEvents,
-  getFamilyGroups,
   getFaqs,
   getFeaturedPhotos,
   getHotels,
@@ -47,7 +45,6 @@ export default async function Home() {
     party,
     preWedding,
     hotels,
-    families,
     vendors,
     registry,
     postWedding,
@@ -61,7 +58,6 @@ export default async function Home() {
     getWeddingParty(),
     getPhotos("pre_wedding"),
     getHotels(),
-    getFamilyGroups(),
     getVendors(),
     getRegistryItems(),
     getPhotos("post_wedding"),
@@ -104,7 +100,6 @@ export default async function Home() {
       <Travel hotels={hotels} />
       <ThreadDivider className="reveal" />
 
-      <Family groups={families} />
       <Vendors vendors={vendors} />
       <Rsvp deadlineNote={deadlineNote} />
       <ThreadDivider className="reveal" />
