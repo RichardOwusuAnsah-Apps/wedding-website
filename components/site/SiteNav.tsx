@@ -7,7 +7,10 @@ const LINKS: [href: string, label: string][] = [
   ["#celebrations", "Celebrations"],
   ["#party", "Wedding Party"],
   ["#gallery", "Gallery"],
+  ["#venues", "Venues"],
   ["#travel", "Travel"],
+  ["#registry", "Registry"],
+  ["#guestbook", "Guestbook"],
   ["#faq", "FAQ"],
 ];
 

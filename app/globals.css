@@ -155,7 +155,7 @@
   }
   .nav-links {
     display: flex;
-    gap: 26px;
+    gap: 18px;
   }
   .nav-links a {
     font-family: var(--font-util);
@@ -435,7 +435,8 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
+  /* nine links no longer fit inline on smaller laptops — use the hamburger */
   .nav-links {
     display: none;
   }
