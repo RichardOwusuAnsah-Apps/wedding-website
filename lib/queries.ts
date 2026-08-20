@@ -76,15 +76,14 @@ export async function getPhotos(
   return (data ?? []) as Photo[];
 }
 
-/** Up to 4 admin-chosen "featured" photos for the hero hanging frames. */
+/** All admin-chosen "featured" photos for the hero frames (they rotate). */
 export async function getFeaturedPhotos(): Promise<Photo[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("photos")
     .select("*")
     .eq("is_featured", true)
-    .order("sort_order", { ascending: true })
-    .limit(4);
+    .order("sort_order", { ascending: true });
   if (error) {
     console.error("[queries] featured photos:", error.message);
     return [];
