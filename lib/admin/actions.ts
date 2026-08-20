@@ -168,6 +168,43 @@ export async function updatePhoto(
   return { ok: true };
 }
 
+/**
+ * Renumber a gallery's photos to a contiguous 1..N by their current order, so
+ * there are never gaps (after a delete) or two photos sharing the same number.
+ * Fractional sort_order values are allowed on the way in (e.g. 2.5 to slot a
+ * photo between 2 and 3) — this collapses them back to clean integers.
+ */
+export async function normalizeGalleryOrder(
+  gallery: "pre_wedding" | "post_wedding",
+): Promise<Result> {
+  const supabase = await authedClient();
+  if (!supabase) return { error: "Not signed in" };
+
+  const { data, error } = await supabase
+    .from("photos")
+    .select("id, sort_order")
+    .eq("gallery", gallery)
+    .order("sort_order", { ascending: true })
+    .order("id", { ascending: true });
+  if (error) return { error: error.message };
+
+  const rows = data ?? [];
+  for (let i = 0; i < rows.length; i++) {
+    const want = i + 1; // 1-based, contiguous, unique
+    if (rows[i].sort_order !== want) {
+      const { error: upErr } = await supabase
+        .from("photos")
+        .update({ sort_order: want })
+        .eq("id", rows[i].id);
+      if (upErr) return { error: upErr.message };
+    }
+  }
+
+  revalidatePath("/admin/gallery");
+  revalidatePath("/");
+  return { ok: true };
+}
+
 export async function setGuestbookStatus(
   id: string,
   status: "pending" | "approved",

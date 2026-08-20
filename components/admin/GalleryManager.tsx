@@ -1,9 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { addPhoto, updatePhoto, deleteRow } from "@/lib/admin/actions";
+import {
+  addPhoto,
+  updatePhoto,
+  deleteRow,
+  normalizeGalleryOrder,
+} from "@/lib/admin/actions";
 import { publicImageUrl } from "@/lib/storage";
 import { ImageCropper, type Crop } from "@/components/admin/ImageCropper";
 import type { Photo } from "@/lib/types";
@@ -95,10 +100,15 @@ function PhotoCard({ photo }: { photo: Photo }) {
           disabled={pending}
           onClick={() =>
             startTransition(async () => {
+              // Bias by -0.5 so a lower number slots this photo *before* the
+              // one already at that position; normalize then re-flattens the
+              // whole gallery to a clean, gap-free 1..N.
+              const target = Number(order);
               await updatePhoto(photo.id, {
                 caption: caption.trim() || null,
-                sort_order: Number(order) || 0,
+                sort_order: Number.isFinite(target) ? target - 0.5 : 0,
               });
+              await normalizeGalleryOrder(photo.gallery as GalleryKey);
               router.refresh();
             })
           }
@@ -112,6 +122,7 @@ function PhotoCard({ photo }: { photo: Photo }) {
             if (!confirm("Delete this photo?")) return;
             startTransition(async () => {
               await deleteRow("photos", photo.id);
+              await normalizeGalleryOrder(photo.gallery as GalleryKey);
               router.refresh();
             });
           }}
@@ -132,6 +143,17 @@ export function GalleryManager({ photos }: { photos: Photo[] }) {
   const shown = photos
     .filter((p) => p.gallery === gallery)
     .sort((a, b) => a.sort_order - b.sort_order);
+
+  // If a gallery's numbering isn't already a clean 1..N (e.g. after deleting
+  // some photos), tidy it once on load so the visible numbers have no gaps or
+  // duplicates. Self-corrects: once normalized, this no longer fires.
+  const needsTidy = shown.some((p, i) => p.sort_order !== i + 1);
+  const tidiedRef = useRef<GalleryKey | null>(null);
+  useEffect(() => {
+    if (!needsTidy || tidiedRef.current === gallery) return;
+    tidiedRef.current = gallery;
+    normalizeGalleryOrder(gallery).then(() => router.refresh());
+  }, [needsTidy, gallery, router]);
 
   async function onFiles(files: FileList | null) {
     if (!files || files.length === 0) return;
@@ -156,6 +178,7 @@ export function GalleryManager({ photos }: { photos: Photo[] }) {
         sort_order: order++,
       });
     }
+    await normalizeGalleryOrder(gallery);
     setUploading(false);
     router.refresh();
   }
