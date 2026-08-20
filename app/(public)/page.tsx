@@ -86,6 +86,7 @@ export default async function Home() {
         monogramSrc={monogramSrc}
         featured={featured}
       />
+      <ThreadDivider className="reveal" />
 
       <Story chapters={chapters} />
       <ThreadDivider className="reveal" />
