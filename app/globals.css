@@ -690,7 +690,8 @@
     text-align: center;
     font-size: 1.7rem;
     color: var(--color-teal);
-    margin-bottom: 6px;
+    /* match the photo-to-name gap below each portrait for even breathing room */
+    margin-bottom: 14px;
   }
   .party-group .gsub {
     text-align: center;
