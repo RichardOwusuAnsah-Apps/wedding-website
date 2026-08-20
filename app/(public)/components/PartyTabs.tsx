@@ -5,25 +5,25 @@ import type { PartyMember } from "@/lib/types";
 import { initials, publicImageUrl } from "@/lib/storage";
 import { FramedPhoto } from "@/components/site/FramedPhoto";
 
-type Group = { key: string; title: string; sub: string };
+type Group = { key: string; title: string };
 
 const SIDES: { key: "groom" | "bride"; label: string; groups: Group[] }[] = [
   {
     key: "groom",
     label: "The Groom's Side",
     groups: [
-      { key: "best_man", title: "Best Man", sub: "By the groom's side" },
-      { key: "groomsmen", title: "Groomsmen", sub: "Standing with the groom" },
-      { key: "trad_men", title: "Traditional Wedding Men", sub: "Richie's customary procession" },
+      { key: "best_man", title: "Best Man" },
+      { key: "groomsmen", title: "Groomsmen" },
+      { key: "trad_men", title: "Extended Groomsmen" },
     ],
   },
   {
     key: "bride",
     label: "The Bride's Side",
     groups: [
-      { key: "maid_of_honour", title: "Maids of Honour", sub: "By the bride's side" },
-      { key: "bridesmaids", title: "Bridesmaids", sub: "Standing with the bride" },
-      { key: "trad_ladies", title: "Traditional Wedding Ladies", sub: "Shula's customary procession" },
+      { key: "maid_of_honour", title: "Maids of Honour" },
+      { key: "bridesmaids", title: "Bridesmaids" },
+      { key: "trad_ladies", title: "Extended Bridesmaids" },
     ],
   },
 ];
@@ -82,7 +82,6 @@ export function PartyTabs({ members }: { members: PartyMember[] }) {
           return (
             <div key={g.key} style={gi > 0 ? { marginTop: 48 } : undefined}>
               <h3>{g.title}</h3>
-              <div className="gsub">{g.sub}</div>
               <div
                 className="people"
                 style={gi === 0 ? { marginBottom: 48 } : undefined}

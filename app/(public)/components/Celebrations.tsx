@@ -16,6 +16,9 @@ function DetailRow({ label, value }: { label: string; value: string | null }) {
 function colorClass(side: string | null): string {
   if (side === "teal") return "white";
   if (side === "gold") return "gold";
+  if (side === "olive") return "olive";
+  if (side === "sage") return "sage";
+  if (side === "champagne") return "champagne";
   return "trad";
 }
 

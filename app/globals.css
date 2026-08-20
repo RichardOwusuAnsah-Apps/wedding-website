@@ -551,6 +551,15 @@
   .cele.gold {
     background: linear-gradient(160deg, #a9803a, #5c421c);
   }
+  .cele.olive {
+    background: linear-gradient(160deg, #6f7541, #40431f);
+  }
+  .cele.sage {
+    background: linear-gradient(160deg, #7e9070, #495441);
+  }
+  .cele.champagne {
+    background: linear-gradient(160deg, #bfa06a, #8a6f43);
+  }
   .cele .tag {
     font-family: var(--font-util);
     font-size: 0.68rem;
