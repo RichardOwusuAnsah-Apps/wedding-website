@@ -11,6 +11,7 @@ import { AfterWedding } from "./components/AfterWedding";
 import { Guestbook } from "./components/Guestbook";
 import { Faq } from "./components/Faq";
 import { ThreadDivider } from "@/components/ui/ThreadDivider";
+import { isSectionVisible } from "@/lib/sections";
 import { publicImageUrl } from "@/lib/storage";
 import {
   getApprovedGuestbook,
@@ -98,17 +99,23 @@ export default async function Home() {
       <Gallery photos={preWedding} />
       <ThreadDivider className="reveal" />
 
-      <Travel hotels={hotels} />
-      <ThreadDivider className="reveal" />
+      {isSectionVisible(settings, "hotels") && (
+        <>
+          <Travel hotels={hotels} />
+          <ThreadDivider className="reveal" />
+        </>
+      )}
 
-      <Vendors vendors={vendors} />
+      {isSectionVisible(settings, "vendors") && <Vendors vendors={vendors} />}
       <Rsvp deadlineNote={deadlineNote} />
       <ThreadDivider className="reveal" />
 
-      <Registry items={registry} note={settings.registry_note} />
+      {isSectionVisible(settings, "registry") && (
+        <Registry items={registry} note={settings.registry_note} />
+      )}
       <AfterWedding weddingDate={weddingDate} photos={postWedding} />
       <Guestbook wishes={wishes} />
-      <Faq faqs={faqs} />
+      {isSectionVisible(settings, "faq") && <Faq faqs={faqs} />}
     </>
   );
 }

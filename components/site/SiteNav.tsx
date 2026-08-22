@@ -14,9 +14,16 @@ const LINKS: [href: string, label: string][] = [
 ];
 
 /** Sticky top nav: transparent at top, frosted once scrolled; mobile dropdown. */
-export function SiteNav({ monogramSrc }: { monogramSrc?: string }) {
+export function SiteNav({
+  monogramSrc,
+  hiddenHrefs = [],
+}: {
+  monogramSrc?: string;
+  hiddenHrefs?: string[];
+}) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const links = LINKS.filter(([href]) => !hiddenHrefs.includes(href));
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -39,7 +46,7 @@ export function SiteNav({ monogramSrc }: { monogramSrc?: string }) {
           )}
         </a>
         <nav className="nav-links" aria-label="Primary">
-          {LINKS.map(([href, label]) => (
+          {links.map(([href, label]) => (
             <a key={href} href={href}>
               {label}
             </a>
@@ -62,7 +69,7 @@ export function SiteNav({ monogramSrc }: { monogramSrc?: string }) {
 
       {open && (
         <div className="nav-mobile">
-          {LINKS.map(([href, label]) => (
+          {links.map(([href, label]) => (
             <a key={href} href={href} onClick={() => setOpen(false)}>
               {label}
             </a>

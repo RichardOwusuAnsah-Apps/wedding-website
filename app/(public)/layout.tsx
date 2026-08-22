@@ -3,6 +3,7 @@ import { SiteNav } from "@/components/site/SiteNav";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { ScrollReveal } from "@/components/site/ScrollReveal";
 import { getSettings } from "@/lib/queries";
+import { isSectionVisible } from "@/lib/sections";
 import { publicImageUrl } from "@/lib/storage";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -40,9 +41,16 @@ export default async function PublicLayout({
     ? publicImageUrl("gallery", s.monogram_path)
     : undefined;
 
+  // Drop nav links that point at sections hidden from the public site.
+  const hiddenHrefs = [
+    !isSectionVisible(s, "hotels") && "#travel",
+    !isSectionVisible(s, "registry") && "#registry",
+    !isSectionVisible(s, "faq") && "#faq",
+  ].filter(Boolean) as string[];
+
   return (
     <>
-      <SiteNav monogramSrc={monogramSrc} />
+      <SiteNav monogramSrc={monogramSrc} hiddenHrefs={hiddenHrefs} />
       <main>{children}</main>
       <SiteFooter />
       <ScrollReveal />
