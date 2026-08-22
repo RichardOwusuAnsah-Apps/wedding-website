@@ -1591,7 +1591,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(60vw, 320px);
+  width: min(42vw, 210px);
   aspect-ratio: 4 / 5;
   height: auto;
   border-radius: 6px;
@@ -1618,7 +1618,51 @@
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(2.7) rotate(0deg);
+    transform: translate(-50%, -50%) scale(2) rotate(0deg);
+  }
+}
+
+/* Welcome card shown on the dark stage after the photos, before the reveal. */
+.intro-welcome {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  color: #fff;
+  animation: introTextIn 750ms ease both;
+}
+.iw-eyebrow {
+  font-family: var(--font-util);
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  color: var(--color-gold-light);
+}
+.iw-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 6vw, 3.4rem);
+  line-height: 1.1;
+  margin: 0.35em 0 0.4em;
+  color: #fff;
+}
+.iw-tag {
+  font-family: var(--font-util);
+  letter-spacing: 0.16em;
+  font-size: 0.98rem;
+  color: var(--color-gold-light);
+}
+@keyframes introTextIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 @media (prefers-reduced-motion: reduce) {

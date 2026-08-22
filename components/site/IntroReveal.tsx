@@ -8,9 +8,10 @@ import { useEffect, useState } from "react";
 // the landing page. Plays on every full load / refresh.
 
 const MAX = 6; // how many photos to fling
-const DUR = 660; // ms each photo is in flight
-const STAGGER = 340; // ms between one photo starting and the next
-const FADE = 550; // ms overlay takes to fade away at the end
+const DUR = 640; // ms each photo is in flight
+const STAGGER = 320; // ms between one photo starting and the next
+const TEXT_HOLD = 2100; // ms the welcome card stays on the dark stage
+const FADE = 600; // ms overlay takes to fade away at the end
 
 export type IntroImage = { small: string; full: string };
 
@@ -38,6 +39,7 @@ function IntroPhoto({ image, index }: { image: IntroImage; index: number }) {
 
 export function IntroReveal({ images }: { images: IntroImage[] }) {
   const pics = images.slice(0, MAX);
+  const [showText, setShowText] = useState(false); // welcome card on the stage
   const [done, setDone] = useState(false); // start the overlay fade
   const [gone, setGone] = useState(false); // remove from the DOM entirely
 
@@ -55,13 +57,18 @@ export function IntroReveal({ images }: { images: IntroImage[] }) {
       return;
     }
 
-    const total = (pics.length - 1) * STAGGER + DUR;
+    const photosTotal = (pics.length - 1) * STAGGER + DUR;
     document.body.style.overflow = "hidden"; // no scrolling behind the intro
-    const t1 = setTimeout(() => setDone(true), total);
-    const t2 = setTimeout(() => setGone(true), total + FADE);
+    const tText = setTimeout(() => setShowText(true), photosTotal);
+    const tDone = setTimeout(() => setDone(true), photosTotal + TEXT_HOLD);
+    const tGone = setTimeout(
+      () => setGone(true),
+      photosTotal + TEXT_HOLD + FADE,
+    );
     return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
+      clearTimeout(tText);
+      clearTimeout(tDone);
+      clearTimeout(tGone);
       document.body.style.overflow = "";
     };
   }, [pics.length]);
@@ -70,9 +77,17 @@ export function IntroReveal({ images }: { images: IntroImage[] }) {
 
   return (
     <div className={`intro-overlay${done ? " intro-out" : ""}`} aria-hidden="true">
-      {pics.map((image, i) => (
-        <IntroPhoto key={i} image={image} index={i} />
-      ))}
+      {!showText &&
+        pics.map((image, i) => (
+          <IntroPhoto key={i} image={image} index={i} />
+        ))}
+      {showText && (
+        <div className="intro-welcome">
+          <span className="iw-eyebrow">Welcome</span>
+          <h2 className="iw-title">The Richie and Shula Affair</h2>
+          <div className="iw-tag">#ShulasealedtheAnsah</div>
+        </div>
+      )}
     </div>
   );
 }
