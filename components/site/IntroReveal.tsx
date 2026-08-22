@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 // the next follows. When the sequence ends the dark overlay fades out to reveal
 // the landing page. Plays on every full load / refresh.
 
-const MAX = 6; // how many photos to fling
+const MAX = 10; // how many photos to fling
 const DUR = 640; // ms each photo is in flight
 const STAGGER = 320; // ms between one photo starting and the next
 const TEXT_HOLD = 2100; // ms the welcome card stays on the dark stage
