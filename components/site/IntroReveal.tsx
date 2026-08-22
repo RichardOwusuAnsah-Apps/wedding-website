@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { optimizedImageUrl } from "@/lib/storage";
 
 // Cinematic intro: gallery photos rush toward the viewer one after another —
 // each starts tiny (far away), zooms up as if thrown at you, then vanishes as
@@ -13,17 +12,19 @@ const DUR = 660; // ms each photo is in flight
 const STAGGER = 340; // ms between one photo starting and the next
 const FADE = 550; // ms overlay takes to fade away at the end
 
-/** One flung photo. Tries the fast optimized URL, falls back to the original. */
-function IntroPhoto({ src, index }: { src: string; index: number }) {
-  const [current, setCurrent] = useState(() => optimizedImageUrl(src, 720));
+export type IntroImage = { small: string; full: string };
+
+/** One flung photo. Uses the small resized image, falls back to the original. */
+function IntroPhoto({ image, index }: { image: IntroImage; index: number }) {
+  const [src, setSrc] = useState(image.small);
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={current}
+      src={src}
       alt=""
       className="intro-pop"
       onError={() => {
-        if (current !== src) setCurrent(src); // optimizer failed -> original
+        if (src !== image.full) setSrc(image.full);
       }}
       style={{
         animationDelay: `${index * STAGGER}ms`,
@@ -35,7 +36,7 @@ function IntroPhoto({ src, index }: { src: string; index: number }) {
   );
 }
 
-export function IntroReveal({ images }: { images: string[] }) {
+export function IntroReveal({ images }: { images: IntroImage[] }) {
   const pics = images.slice(0, MAX);
   const [done, setDone] = useState(false); // start the overlay fade
   const [gone, setGone] = useState(false); // remove from the DOM entirely
@@ -69,8 +70,8 @@ export function IntroReveal({ images }: { images: string[] }) {
 
   return (
     <div className={`intro-overlay${done ? " intro-out" : ""}`} aria-hidden="true">
-      {pics.map((src, i) => (
-        <IntroPhoto key={i} src={src} index={i} />
+      {pics.map((image, i) => (
+        <IntroPhoto key={i} image={image} index={i} />
       ))}
     </div>
   );

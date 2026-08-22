@@ -17,6 +17,26 @@ export function optimizedImageUrl(src: string, width: number, quality = 75): str
   return `/_next/image?url=${encodeURIComponent(src)}&w=${width}&q=${quality}`;
 }
 
+/**
+ * Resize an image with Supabase Storage's own transformer (returns a small
+ * WebP to browsers that accept it). Unlike Next's optimizer, this handles very
+ * large source files, so it's the reliable choice for the multi-megabyte
+ * originals in this project.
+ */
+export function renderImageUrl(
+  bucket: string,
+  path: string,
+  opts: { width: number; height?: number; resize?: "cover" | "contain" | "fill"; quality?: number },
+): string {
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+  const params = new URLSearchParams();
+  params.set("width", String(opts.width));
+  if (opts.height) params.set("height", String(opts.height));
+  params.set("resize", opts.resize ?? "cover");
+  params.set("quality", String(opts.quality ?? 70));
+  return `${base}/storage/v1/render/image/public/${bucket}/${path}?${params.toString()}`;
+}
+
 /** Initials fallback for a missing portrait (e.g. "Kwame Boateng" -> "KB"). */
 export function initials(name: string): string {
   return name
