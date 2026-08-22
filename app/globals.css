@@ -1591,11 +1591,13 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(62vw, 340px);
+  width: min(60vw, 320px);
+  aspect-ratio: 4 / 5;
   height: auto;
   border-radius: 6px;
   border: 3px solid rgba(255, 255, 255, 0.92);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  background: #241016;
   object-fit: cover;
   will-change: transform, opacity;
   animation-name: introPop;

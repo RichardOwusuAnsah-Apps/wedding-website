@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { optimizedImageUrl } from "@/lib/storage";
 
 // Cinematic intro: gallery photos rush toward the viewer one after another —
 // each starts tiny (far away), zooms up as if thrown at you, then vanishes as
@@ -11,6 +12,28 @@ const MAX = 6; // how many photos to fling
 const DUR = 660; // ms each photo is in flight
 const STAGGER = 340; // ms between one photo starting and the next
 const FADE = 550; // ms overlay takes to fade away at the end
+
+/** One flung photo. Tries the fast optimized URL, falls back to the original. */
+function IntroPhoto({ src, index }: { src: string; index: number }) {
+  const [current, setCurrent] = useState(() => optimizedImageUrl(src, 720));
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={current}
+      alt=""
+      className="intro-pop"
+      onError={() => {
+        if (current !== src) setCurrent(src); // optimizer failed -> original
+      }}
+      style={{
+        animationDelay: `${index * STAGGER}ms`,
+        animationDuration: `${DUR}ms`,
+        // slight alternating tilt so each throw feels alive
+        ["--introRot" as string]: `${index % 2 === 0 ? -7 : 7}deg`,
+      }}
+    />
+  );
+}
 
 export function IntroReveal({ images }: { images: string[] }) {
   const pics = images.slice(0, MAX);
@@ -47,19 +70,7 @@ export function IntroReveal({ images }: { images: string[] }) {
   return (
     <div className={`intro-overlay${done ? " intro-out" : ""}`} aria-hidden="true">
       {pics.map((src, i) => (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          key={i}
-          src={src}
-          alt=""
-          className="intro-pop"
-          style={{
-            animationDelay: `${i * STAGGER}ms`,
-            animationDuration: `${DUR}ms`,
-            // slight alternating tilt so each throw feels alive
-            ["--introRot" as string]: `${i % 2 === 0 ? -7 : 7}deg`,
-          }}
-        />
+        <IntroPhoto key={i} src={src} index={i} />
       ))}
     </div>
   );

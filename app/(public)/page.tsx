@@ -13,7 +13,7 @@ import { Faq } from "./components/Faq";
 import { ThreadDivider } from "@/components/ui/ThreadDivider";
 import { IntroReveal } from "@/components/site/IntroReveal";
 import { isSectionVisible } from "@/lib/sections";
-import { publicImageUrl, optimizedImageUrl } from "@/lib/storage";
+import { publicImageUrl } from "@/lib/storage";
 import {
   getApprovedGuestbook,
   getEvents,
@@ -80,7 +80,7 @@ export default async function Home() {
 
   // Photos flung at the viewer during the cinematic intro (uses the gallery).
   const introImages = preWedding.map((p) =>
-    optimizedImageUrl(publicImageUrl("gallery", p.storage_path), 720),
+    publicImageUrl("gallery", p.storage_path),
   );
 
   return (
