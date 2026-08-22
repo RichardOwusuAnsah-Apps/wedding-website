@@ -1572,6 +1572,53 @@
     transform: none;
   }
 }
+
+/* Cinematic intro: gallery photos flung toward the viewer, one after another,
+   over a dark stage, then the whole overlay fades to reveal the landing page. */
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 44%, #34191f, #0c0709 72%);
+  perspective: 1100px;
+  transition: opacity 550ms ease;
+}
+.intro-overlay.intro-out {
+  opacity: 0;
+}
+.intro-pop {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(62vw, 340px);
+  height: auto;
+  border-radius: 6px;
+  border: 3px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  object-fit: cover;
+  will-change: transform, opacity;
+  animation-name: introPop;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.25, 1);
+  animation-fill-mode: both;
+  animation-iteration-count: 1;
+}
+@keyframes introPop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.06) rotate(var(--introRot, 0deg));
+  }
+  22% {
+    opacity: 1;
+  }
+  68% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2.7) rotate(0deg);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .hphoto {
     opacity: 1;

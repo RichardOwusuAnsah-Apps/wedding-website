@@ -11,8 +11,9 @@ import { AfterWedding } from "./components/AfterWedding";
 import { Guestbook } from "./components/Guestbook";
 import { Faq } from "./components/Faq";
 import { ThreadDivider } from "@/components/ui/ThreadDivider";
+import { IntroReveal } from "@/components/site/IntroReveal";
 import { isSectionVisible } from "@/lib/sections";
-import { publicImageUrl } from "@/lib/storage";
+import { publicImageUrl, optimizedImageUrl } from "@/lib/storage";
 import {
   getApprovedGuestbook,
   getEvents,
@@ -77,8 +78,14 @@ export default async function Home() {
     ? `Kindly respond by ${formatDate(settings.rsvp_deadline)} so we can prepare to celebrate with you.`
     : undefined;
 
+  // Photos flung at the viewer during the cinematic intro (uses the gallery).
+  const introImages = preWedding.map((p) =>
+    optimizedImageUrl(publicImageUrl("gallery", p.storage_path), 720),
+  );
+
   return (
     <>
+      <IntroReveal images={introImages} />
       <Hero
         coupleNames={settings.couple_names || ""}
         tagline={settings.tagline || ""}
