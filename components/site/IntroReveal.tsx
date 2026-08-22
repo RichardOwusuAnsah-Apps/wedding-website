@@ -61,10 +61,10 @@ export function IntroReveal({ images }: { images: IntroImage[] }) {
     document.body.style.overflow = "hidden"; // no scrolling behind the intro
     const tText = setTimeout(() => setShowText(true), photosTotal);
     const tDone = setTimeout(() => setDone(true), photosTotal + TEXT_HOLD);
-    const tGone = setTimeout(
-      () => setGone(true),
-      photosTotal + TEXT_HOLD + FADE,
-    );
+    const tGone = setTimeout(() => {
+      document.body.style.overflow = ""; // release scroll when the intro ends
+      setGone(true);
+    }, photosTotal + TEXT_HOLD + FADE);
     return () => {
       clearTimeout(tText);
       clearTimeout(tDone);
