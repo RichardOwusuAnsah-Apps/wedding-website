@@ -36,7 +36,17 @@ body{
   -webkit-tap-highlight-color:transparent; overscroll-behavior-y:auto;
 }
 .stage{ min-height:100dvh; display:flex; align-items:center; justify-content:center;
-  padding:calc(70px + var(--pull)*var(--topTravel)) 16px calc(130px + var(--pull)*var(--botTravel));
+  /* The bottom padding reserves room for the tassel hanging below the card
+     (cord 28 + knot 17 + skirt 50 - 3 = 92px) but the top padding never
+     balanced it, so flex centring seated the whole composition above centre —
+     on a phone that read as pinned to the top with dead space underneath.
+     --dropY brings it back down; it is doubled because centring splits the
+     padding difference in half. The min()/max() is what keeps the tassel on
+     the first screen: it only drops as far as the space below the tassel
+     allows, so a short phone drops less (or not at all) rather than pushing
+     the tassel out of view. */
+  --dropY:min(30px, max(0px, calc(50dvh - var(--cardH)/2 - 108px)));
+  padding:calc(70px + var(--dropY)*2 + var(--pull)*var(--topTravel)) 16px calc(130px + var(--pull)*var(--botTravel));
   transition:padding .5s cubic-bezier(.3,0,.2,1) }
 @media (min-width:901px){ body.edon .stage{ padding-right:372px } }
 @media (max-width:900px){
