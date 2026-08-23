@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SiteNav } from "@/components/site/SiteNav";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { ScrollReveal } from "@/components/site/ScrollReveal";
+import { HashLanding } from "@/components/site/HashLanding";
 import { getSettings } from "@/lib/queries";
 import { isSectionVisible } from "@/lib/sections";
 import { publicImageUrl } from "@/lib/storage";
@@ -54,6 +55,7 @@ export default async function PublicLayout({
       <main>{children}</main>
       <SiteFooter />
       <ScrollReveal />
+      <HashLanding />
     </>
   );
 }

@@ -1094,13 +1094,25 @@
       animation: none;
     }
   }
-  /* uniform square gallery — every tile is 1:1, 4 columns (matches the
-     wedding-party grid on laptops; steps down to 2 then 1 on smaller screens) */
+  /* uniform square gallery — every tile is 1:1. The column count and gap live
+     in CSS (not JS) so the server-rendered paint already matches the phone
+     layout; PhotoGallery only sets --gcols/--ggap inline once the viewer picks
+     a value themselves. Anything else shifts every section below the gallery
+     after hydration, which breaks landing on a #hash (e.g. the invite's #rsvp). */
   .grid-photos {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 22px;
+    --gcols: 3; /* PhotoGallery LAPTOP_DEFAULT */
+    --ggap: 18px;
+    grid-template-columns: repeat(var(--gcols), 1fr);
+    gap: var(--ggap);
     margin: 0 auto;
+  }
+  /* must match PhotoGallery's isPhone breakpoint exactly */
+  @media (max-width: 640px) {
+    .grid-photos {
+      --gcols: 2; /* PhotoGallery PHONE_DEFAULT */
+      --ggap: 10px;
+    }
   }
   .ph {
     aspect-ratio: 1 / 1;
@@ -1569,9 +1581,6 @@
   .person {
     width: calc((100% - 24px) / 2); /* two per row */
   }
-  .grid-photos {
-    grid-template-columns: 1fr 1fr;
-  }
   .wishes {
     columns: 1;
   }
@@ -1586,9 +1595,6 @@
   }
   .rsvp-box {
     padding: 32px 22px;
-  }
-  .grid-photos {
-    grid-template-columns: 1fr;
   }
 }
 

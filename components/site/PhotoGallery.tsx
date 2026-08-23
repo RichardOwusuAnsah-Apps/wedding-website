@@ -45,6 +45,15 @@ export function PhotoGallery({
   const options = isPhone ? PHONE_COLS : LAPTOP_COLS;
   const gap = isPhone ? 10 : 18;
 
+  // Until the viewer picks a count, CSS decides (see .grid-photos in
+  // globals.css) so the server paint already matches the phone layout. Setting
+  // it inline from the start made the grid grow ~50% taller on phones right
+  // after hydration, shoving every later section — RSVP included — down the
+  // page and breaking arrivals at /#rsvp.
+  const gridStyle = userPicked
+    ? ({ "--gcols": cols, "--ggap": `${gap}px` } as React.CSSProperties)
+    : undefined;
+
   const items: LightboxItem[] = photos.map((p) => ({
     src: publicImageUrl("gallery", p.storage_path),
     caption: p.caption,
@@ -71,10 +80,7 @@ export function PhotoGallery({
         ))}
       </div>
 
-      <div
-        className="grid-photos reveal"
-        style={{ gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: `${gap}px` }}
-      >
+      <div className="grid-photos reveal" style={gridStyle}>
         {photos.map((p, i) => (
           <button
             key={p.id}
