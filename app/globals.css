@@ -741,10 +741,16 @@
     gap: 10px;
     align-items: baseline;
   }
+  /* flex: 0 0 auto is what stops a long label (DRESS CODE) being squeezed to
+     the min-width while its nowrap text keeps its natural size and runs over
+     the value beside it. The label box now grows to fit whatever it holds, so
+     the columns stay apart no matter what label gets added later; min-width
+     keeps the short labels aligned to the same value column. */
   .cele .det b {
     color: var(--color-gold-light);
     font-weight: 500;
-    min-width: 64px;
+    flex: 0 0 auto;
+    min-width: 96px;
     font-size: 0.66rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
