@@ -9,21 +9,21 @@ type Group = { key: string; title: string };
 
 const SIDES: { key: "groom" | "bride"; label: string; groups: Group[] }[] = [
   {
-    key: "groom",
-    label: "The Groom's Side",
-    groups: [
-      { key: "best_man", title: "Best Man" },
-      { key: "groomsmen", title: "Groomsmen" },
-      { key: "trad_men", title: "Extended Groomsmen" },
-    ],
-  },
-  {
     key: "bride",
     label: "The Bride's Side",
     groups: [
       { key: "maid_of_honour", title: "Maids of Honour" },
       { key: "bridesmaids", title: "Bridesmaids" },
       { key: "trad_ladies", title: "Extended Bridesmaids" },
+    ],
+  },
+  {
+    key: "groom",
+    label: "The Groom's Side",
+    groups: [
+      { key: "best_man", title: "Best Man" },
+      { key: "groomsmen", title: "Groomsmen" },
+      { key: "trad_men", title: "Extended Groomsmen" },
     ],
   },
 ];
@@ -55,7 +55,7 @@ function Person({ member }: { member: PartyMember }) {
 }
 
 export function PartyTabs({ members }: { members: PartyMember[] }) {
-  const [side, setSide] = useState<"groom" | "bride">("groom");
+  const [side, setSide] = useState<"groom" | "bride">("bride");
   const active = SIDES.find((s) => s.key === side)!;
 
   return (
