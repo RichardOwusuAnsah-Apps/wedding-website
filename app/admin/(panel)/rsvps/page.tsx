@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { ExportCsv } from "@/components/admin/ExportCsv";
 import type { RsvpRow } from "@/lib/admin/rsvpTypes";
+import { expandToPeople, headCount } from "@/lib/admin/rsvpPeople";
 
 function fmtDate(iso: string): string {
   const d = new Date(iso);
@@ -20,6 +21,8 @@ export default async function RsvpsPage() {
     .select("*")
     .order("created_at", { ascending: false });
   const rows = (data ?? []) as RsvpRow[];
+  const people = expandToPeople(rows);
+  const guests = headCount(rows);
 
   return (
     <div>
@@ -27,7 +30,7 @@ export default async function RsvpsPage() {
         <h1 className="font-display text-4xl text-burgundy">
           RSVPs{" "}
           <span className="font-util text-base text-muted align-middle">
-            ({rows.length})
+            ({rows.length} submitted · {guests} coming)
           </span>
         </h1>
         <ExportCsv rows={rows} />
@@ -50,18 +53,38 @@ export default async function RsvpsPage() {
               </tr>
             </thead>
             <tbody className="text-[0.92rem]">
-              {rows.map((r) => (
-                <tr key={r.id} className="border-b border-line last:border-0 align-top">
-                  <td className="px-4 py-3 whitespace-nowrap text-burgundy">{r.full_name}</td>
-                  <td className="px-4 py-3 whitespace-nowrap text-muted">{r.email ?? "—"}</td>
-                  <td className="px-4 py-3">{r.attending ? "Yes" : "No"}</td>
-                  <td className="px-4 py-3 capitalize">{r.events_attending ?? "—"}</td>
-                  <td className="px-4 py-3">{r.party_size ?? 1}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{r.meal_preference ?? "—"}</td>
-                  <td className="px-4 py-3 max-w-xs text-muted">{r.message ?? ""}</td>
-                  <td className="px-4 py-3 whitespace-nowrap text-muted">{fmtDate(r.created_at)}</td>
-                </tr>
-              ))}
+              {people.map((p) => {
+                const r = p.rsvp;
+                return (
+                  <tr
+                    key={p.key}
+                    className={`align-top ${p.isPlusOne ? "" : "border-b border-line last:border-0"}`}
+                  >
+                    <td className="px-4 py-3 whitespace-nowrap text-burgundy">
+                      {p.isPlusOne && <span className="text-muted">↳ </span>}
+                      {p.name}
+                      {p.isPlusOne && (
+                        <span className="font-util text-[0.6rem] tracking-[0.14em] uppercase text-muted ml-2">
+                          +1 of {p.broughtBy}
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-muted">
+                      {p.isPlusOne ? "—" : (r.email ?? "—")}
+                    </td>
+                    <td className="px-4 py-3">{r.attending ? "Yes" : "No"}</td>
+                    <td className="px-4 py-3 capitalize">{r.events_attending ?? "—"}</td>
+                    <td className="px-4 py-3">{p.isPlusOne ? "—" : (r.party_size ?? 1)}</td>
+                    <td className="px-4 py-3 whitespace-nowrap">{r.meal_preference ?? "—"}</td>
+                    <td className="px-4 py-3 max-w-xs text-muted">
+                      {p.isPlusOne ? "" : (r.message ?? "")}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-muted">
+                      {fmtDate(r.created_at)}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

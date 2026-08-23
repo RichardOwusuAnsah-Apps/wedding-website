@@ -1382,13 +1382,17 @@
     outline: none;
     border-color: var(--color-gold);
   }
+  /* Wraps instead of pushing the last option outside the card: with four
+     options the row breaks 2x2 on phones and stays a single row on laptops. */
   .seg {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
   }
   .seg button {
-    flex: 1;
-    padding: 12px;
+    flex: 1 1 110px;
+    min-width: 0;
+    padding: 12px 10px;
     border: 1px solid var(--color-line);
     background: var(--color-ivory);
     border-radius: 3px;

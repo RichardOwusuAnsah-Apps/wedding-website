@@ -135,11 +135,16 @@ create table if not exists rsvps (
   email text,
   attending boolean,
   events_attending text,                -- 'traditional' | 'wedding' | 'reception' | 'all'
-  party_size int default 1,
+  party_size int default 1,             -- 1, or 2 when guest_name is set
+  guest_name text,                      -- the +1's name, null when alone
   meal_preference text,
   message text,
   created_at timestamptz default now()
 );
+
+-- Added after the first launch: existing databases only pick up guest_name by
+-- re-running this file (create table if not exists skips the definition above).
+alter table rsvps add column if not exists guest_name text;
 
 create table if not exists guestbook (
   id uuid primary key default gen_random_uuid(),

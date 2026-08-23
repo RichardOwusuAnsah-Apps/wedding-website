@@ -7,6 +7,7 @@ interface RsvpInput {
   attending: boolean;
   events_attending: string | null;
   party_size: number;
+  guest_name: string | null;
   meal_preference: string | null;
   message: string | null;
 }
@@ -36,12 +37,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Name is required" }, { status: 400 });
   }
 
+  // A +1 is only real if it comes with a name — that keeps party_size and
+  // guest_name from ever disagreeing about how many people are coming.
+  const guestName = body.guest_name ? String(body.guest_name).trim() : "";
+
   const row: RsvpInput = {
     full_name: fullName,
     email: body.email ? String(body.email).trim() : null,
     attending: Boolean(body.attending),
     events_attending: body.events_attending ? String(body.events_attending) : null,
-    party_size: Number(body.party_size) || 1,
+    party_size: guestName ? 2 : 1,
+    guest_name: guestName || null,
     meal_preference: body.meal_preference ? String(body.meal_preference) : null,
     message: body.message ? String(body.message).trim() : null,
   };
@@ -70,7 +76,7 @@ async function notify(row: RsvpInput) {
     ["Name", row.full_name],
     ["Attending", row.attending ? "Yes 🎉" : "No"],
     ["Celebrations", row.events_attending ? (EVENT_LABEL[row.events_attending] ?? row.events_attending) : "—"],
-    ["Guests", String(row.party_size)],
+    ["Guests", row.guest_name ? `2 — with ${row.guest_name}` : "Just them"],
     ["Meal", row.meal_preference ?? "—"],
     ["Message", row.message ?? "—"],
   ];

@@ -11,7 +11,10 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
   const [fullName, setFullName] = useState("");
   const [attending, setAttending] = useState<Attending>("yes");
   const [which, setWhich] = useState<Which>("all");
-  const [partySize, setPartySize] = useState(1);
+  // Either the guest comes alone or they bring exactly one person, whose name
+  // we take here so the couple has a real name for every seat.
+  const [plusOne, setPlusOne] = useState(false);
+  const [guestName, setGuestName] = useState("");
   const [meal, setMeal] = useState("Standard");
 
   const [status, setStatus] = useState<Status>("idle");
@@ -22,6 +25,11 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
     e.preventDefault();
     if (!fullName.trim()) {
       setError("Please enter your name.");
+      setStatus("error");
+      return;
+    }
+    if (plusOne && !guestName.trim()) {
+      setError("Please add your guest's name.");
       setStatus("error");
       return;
     }
@@ -36,7 +44,8 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
           full_name: fullName.trim(),
           attending: attending === "yes",
           events_attending: which,
-          party_size: partySize,
+          party_size: plusOne ? 2 : 1,
+          guest_name: plusOne ? guestName.trim() : null,
           meal_preference: meal,
         }),
       });
@@ -125,18 +134,41 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
             </div>
 
             <div className="field">
-              <label htmlFor="rsvp-party">Number of guests</label>
-              <select
-                id="rsvp-party"
-                value={partySize}
-                onChange={(e) => setPartySize(Number(e.target.value))}
-              >
-                <option value={1}>Just me</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-                <option value={4}>4</option>
-              </select>
+              <label>Number of guests</label>
+              <div className="seg">
+                <button
+                  type="button"
+                  className={plusOne ? "" : "on"}
+                  onClick={() => {
+                    setPlusOne(false);
+                    setGuestName("");
+                  }}
+                >
+                  Just me
+                </button>
+                <button
+                  type="button"
+                  className={plusOne ? "on" : ""}
+                  onClick={() => setPlusOne(true)}
+                >
+                  +1
+                </button>
+              </div>
             </div>
+
+            {plusOne && (
+              <div className="field">
+                <label htmlFor="rsvp-guest">Your guest&rsquo;s name</label>
+                <input
+                  id="rsvp-guest"
+                  type="text"
+                  placeholder="Their full name"
+                  value={guestName}
+                  onChange={(e) => setGuestName(e.target.value)}
+                  required
+                />
+              </div>
+            )}
 
             <div className="field">
               <label htmlFor="rsvp-meal">Meal preference</label>
