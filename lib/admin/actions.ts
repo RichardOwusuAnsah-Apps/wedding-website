@@ -11,6 +11,7 @@ const DELETABLE = new Set([
   ...Object.keys(RESOURCE_BY_TABLE),
   "photos",
   "guestbook",
+  "rsvps",
 ]);
 
 async function authedClient() {
@@ -107,6 +108,7 @@ export async function deleteRow(table: string, id: string): Promise<Result> {
 
   if (table === "photos") revalidatePath("/admin/gallery");
   else if (table === "guestbook") revalidatePath("/admin/guestbook");
+  else if (table === "rsvps") revalidatePath("/admin/rsvps");
   revalidateFor(table);
   return { ok: true };
 }

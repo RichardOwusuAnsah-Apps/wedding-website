@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ExportCsv } from "@/components/admin/ExportCsv";
 import type { RsvpRow } from "@/lib/admin/rsvpTypes";
 import { expandToPeople, headCount } from "@/lib/admin/rsvpPeople";
+import { DeleteRsvp } from "@/components/admin/DeleteRsvp";
 
 function fmtDate(iso: string): string {
   const d = new Date(iso);
@@ -43,7 +44,7 @@ export default async function RsvpsPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="font-util text-[0.6rem] tracking-[0.14em] uppercase text-muted">
-                {["Name", "Email", "Attending", "Events", "Guests", "Meal", "Message", "Date"].map(
+                {["Name", "Email", "Attending", "Events", "Guests", "Meal", "Message", "Date", ""].map(
                   (h) => (
                     <th key={h} className="px-4 py-3 border-b border-line whitespace-nowrap">
                       {h}
@@ -81,6 +82,16 @@ export default async function RsvpsPage() {
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-muted">
                       {fmtDate(r.created_at)}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-right">
+                      {/* the +1 lives on the submission, so only it can be deleted */}
+                      {!p.isPlusOne && (
+                        <DeleteRsvp
+                          id={r.id}
+                          name={r.full_name}
+                          guestName={r.guest_name}
+                        />
+                      )}
                     </td>
                   </tr>
                 );
