@@ -131,6 +131,18 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
                   </button>
                 ))}
               </div>
+              <p
+                style={{
+                  marginTop: 12,
+                  fontFamily: "var(--font-body)",
+                  fontSize: "0.8rem",
+                  color: "var(--color-burgundy)",
+                  textAlign: "left",
+                }}
+              >
+                Whilst we love your little ones, the reception is an adults-only
+                celebration.
+              </p>
             </div>
 
             <div className="field">
