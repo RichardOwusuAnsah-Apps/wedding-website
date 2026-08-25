@@ -2297,26 +2297,13 @@
     transform: none;
   }
 
-  /* EXPANDED: reflow full width — photo on top, medallion, then full text */
-  .s-row.s-open {
-    grid-template-columns: 1fr;
-  }
-  .s-row.s-open .s-photo,
-  .s-row.s-open .s-medallion,
-  .s-row.s-open .s-text {
-    order: 0;
-    text-align: center;
-    padding: 0;
-  }
-  .s-row.s-open .s-frame {
-    max-width: 58%;
-  }
-  .s-row.s-open .s-medallion {
-    margin: 12px auto;
-  }
+  /* EXPANDED: grow downward in place — column, width and side all unchanged */
   .s-row.s-open .s-body {
     -webkit-line-clamp: 999;
     max-height: 90em;
     overflow: visible;
+    font-size: 13px;
+    line-height: 1.65;
+    text-align: left;
   }
 }
