@@ -75,6 +75,20 @@ export function Celebrations({ events }: { events: EventRow[] }) {
                     </div>
                   )}
                   <DetailRow label="Dress Code" value={e.attire} />
+                  {e.title?.toLowerCase().includes("reception") && (
+                    <p
+                      style={{
+                        marginTop: 5,
+                        fontFamily: "var(--font-body)",
+                        fontSize: "0.9rem",
+                        letterSpacing: "normal",
+                        color: "rgba(255, 255, 255, 0.85)",
+                      }}
+                    >
+                      Whilst we love your little ones, the reception is an
+                      adults-only celebration.
+                    </p>
+                  )}
                 </div>
               </div>
             );
