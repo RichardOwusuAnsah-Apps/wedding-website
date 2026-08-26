@@ -154,6 +154,19 @@ create table if not exists guestbook (
   created_at timestamptz default now()
 );
 
+-- Reception "closed list": names the couple has marked as unable to attend the
+-- reception. When a guest RSVPs under one of these names, the Reception + "All"
+-- options are closed to them ("seats are filled"). The list is PRIVATE — it has
+-- no public read policy; the public site only ever learns a yes/no for the exact
+-- name typed, via the reception_blocked() function below.
+create table if not exists blocked_guests (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,                   -- as the guest will type it on the RSVP
+  note text,                            -- optional, admin-only reason
+  sort_order int default 0,
+  created_at timestamptz default now()
+);
+
 -- ============================================================================
 -- API role grants
 -- PostgREST roles (anon / authenticated / service_role) need table privileges
@@ -254,6 +267,40 @@ drop policy if exists "admin all" on rsvps;
 create policy "admin all" on rsvps           for all to authenticated using (true) with check (true);
 drop policy if exists "admin all" on guestbook;
 create policy "admin all" on guestbook       for all to authenticated using (true) with check (true);
+
+-- ---- BLOCKED GUESTS: admin-only. No anon policy → the list stays private. ----
+alter table blocked_guests enable row level security;
+drop policy if exists "admin all" on blocked_guests;
+create policy "admin all" on blocked_guests   for all to authenticated using (true) with check (true);
+grant select, insert, update, delete on blocked_guests to authenticated, service_role;
+
+-- Normalise a name for comparison: trim ends, collapse inner whitespace, casefold.
+create or replace function norm_name(t text)
+returns text language sql immutable as $$
+  select lower(regexp_replace(btrim(coalesce(t, '')), '\s+', ' ', 'g'))
+$$;
+
+-- Public-safe check: is the typed name closed off? A list entry matches when
+-- every word in it appears as a word in the guest's name (order-independent).
+-- So a full name targets one person, while a lone first/last name matches anyone
+-- who carries it. security definer so the anon RSVP form can call it WITHOUT
+-- reading the table.
+create or replace function reception_blocked(check_name text)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public as $$
+  select norm_name(check_name) <> '' and exists (
+    select 1 from blocked_guests b
+    where norm_name(b.name) <> ''
+      and string_to_array(norm_name(b.name), ' ')
+          <@ string_to_array(norm_name(check_name), ' ')
+  )
+$$;
+
+revoke all on function reception_blocked(text) from public;
+grant execute on function reception_blocked(text) to anon, authenticated, service_role;
 
 -- ============================================================================
 -- Storage buckets — public read, authenticated write

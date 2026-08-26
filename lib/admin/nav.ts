@@ -11,6 +11,7 @@ export const ADMIN_NAV_ITEMS: [href: string, label: string][] = [
   ["/admin/registry", "Registry"],
   ["/admin/faq", "FAQ"],
   ["/admin/rsvps", "RSVPs"],
+  ["/admin/blocked", "Reception List"],
   ["/admin/guestbook", "Guestbook"],
 ];
 

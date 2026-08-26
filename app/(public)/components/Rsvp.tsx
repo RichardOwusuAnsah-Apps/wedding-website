@@ -1,16 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SectionHead } from "@/components/ui/SectionHead";
 
 type Attending = "yes" | "no";
 type Which = "traditional" | "wedding" | "reception" | "all";
 type Status = "idle" | "submitting" | "error";
 
+// Options closed to a guest once their name is on the reception "closed list".
+const RECEPTION_OPTIONS: Which[] = ["reception", "all"];
+
 export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
   const [fullName, setFullName] = useState("");
   const [attending, setAttending] = useState<Attending>("yes");
-  const [which, setWhich] = useState<Which>("all");
+  const [which, setWhich] = useState<Which | "">("all");
+  // Set once the typed name matches the couple's private reception closed list.
+  const [receptionClosed, setReceptionClosed] = useState(false);
   // Either the guest comes alone or they bring exactly one person, whose name
   // we take here so the couple has a real name for every seat.
   const [plusOne, setPlusOne] = useState(false);
@@ -21,6 +26,38 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
 
+  // Debounced lookup: does the reception closed list include this name?
+  // Fails open — a lookup error never closes the reception on a real guest.
+  useEffect(() => {
+    const name = fullName.trim();
+    if (!name) {
+      setReceptionClosed(false);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch("/api/rsvp/check", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name }),
+        });
+        const data = await res.json();
+        setReceptionClosed(Boolean(data?.blocked));
+      } catch {
+        setReceptionClosed(false);
+      }
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [fullName]);
+
+  // If the reception closes on their name, drop any reception/"all" selection so
+  // they re-pick among the open celebrations.
+  useEffect(() => {
+    if (receptionClosed && (which === "reception" || which === "all")) {
+      setWhich("");
+    }
+  }, [receptionClosed, which]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!fullName.trim()) {
@@ -30,6 +67,11 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
     }
     if (plusOne && !guestName.trim()) {
       setError("Please add your guest's name.");
+      setStatus("error");
+      return;
+    }
+    if (attending === "yes" && which === "") {
+      setError("Please choose which celebration you'll attend.");
       setStatus("error");
       return;
     }
@@ -49,11 +91,15 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
           meal_preference: meal,
         }),
       });
-      if (!res.ok) throw new Error(String(res.status));
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || "");
+      }
       setDone(true);
-    } catch {
+    } catch (err) {
       setStatus("error");
-      setError("Something went wrong. Please try again.");
+      const msg = err instanceof Error ? err.message : "";
+      setError(msg || "Something went wrong. Please try again.");
     }
   }
 
@@ -120,29 +166,52 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
                     ["reception", "Reception"],
                     ["all", "All"],
                   ] as [Which, string][]
-                ).map(([key, label]) => (
-                  <button
-                    key={key}
-                    type="button"
-                    className={which === key ? "on" : ""}
-                    onClick={() => setWhich(key)}
-                  >
-                    {label}
-                  </button>
-                ))}
+                ).map(([key, label]) => {
+                  const closed =
+                    receptionClosed && RECEPTION_OPTIONS.includes(key);
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      className={`${which === key ? "on" : ""}${closed ? " closed" : ""}`}
+                      aria-disabled={closed}
+                      onClick={() => {
+                        if (closed) return; // message below explains why
+                        setWhich(key);
+                      }}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
               </div>
-              <p
-                style={{
-                  marginTop: 12,
-                  fontFamily: "var(--font-body)",
-                  fontSize: "0.8rem",
-                  color: "var(--color-burgundy)",
-                  textAlign: "left",
-                }}
-              >
-                Whilst we love your little ones, the reception is an adults-only
-                celebration.
-              </p>
+              {receptionClosed ? (
+                <p
+                  style={{
+                    marginTop: 12,
+                    fontFamily: "var(--font-body)",
+                    fontSize: "0.85rem",
+                    color: "var(--color-burgundy)",
+                    textAlign: "left",
+                  }}
+                >
+                  The reception is fully booked — those seats are filled. You&rsquo;re
+                  warmly invited to join us for the other celebrations.
+                </p>
+              ) : (
+                <p
+                  style={{
+                    marginTop: 12,
+                    fontFamily: "var(--font-body)",
+                    fontSize: "0.8rem",
+                    color: "var(--color-burgundy)",
+                    textAlign: "left",
+                  }}
+                >
+                  Whilst we love your little ones, the reception is an adults-only
+                  celebration.
+                </p>
+              )}
             </div>
 
             <div className="field">

@@ -243,6 +243,29 @@ export const RESOURCES: Record<string, ResourceDef> = {
       SORT,
     ],
   },
+  blocked: {
+    slug: "blocked",
+    table: "blocked_guests",
+    title: "Reception — Closed List",
+    singular: "Name",
+    titleField: "name",
+    fields: [
+      {
+        name: "name",
+        label: "Full name (exactly as they'll type it on the RSVP)",
+        type: "text",
+        required: true,
+        placeholder: "e.g. Kwame Mensah",
+      },
+      {
+        name: "note",
+        label: "Private note (optional — only you see this)",
+        type: "textarea",
+        placeholder: "e.g. bride's second cousin",
+      },
+      SORT,
+    ],
+  },
 };
 
 export const RESOURCE_BY_TABLE: Record<string, ResourceDef> = Object.fromEntries(

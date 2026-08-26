@@ -53,6 +53,24 @@ export async function POST(request: Request) {
   };
 
   const supabase = await createClient();
+
+  // Reception "closed list": a blocked name can't book the reception or "all".
+  // Backstop for the form's own guard — blocks crafted/JS-off submissions too.
+  if (row.events_attending === "reception" || row.events_attending === "all") {
+    const { data: blocked } = await supabase.rpc("reception_blocked", {
+      check_name: fullName,
+    });
+    if (blocked) {
+      return NextResponse.json(
+        {
+          error:
+            "The reception is fully booked — those seats are filled. Please choose Traditional or Wedding.",
+        },
+        { status: 409 },
+      );
+    }
+  }
+
   const { error } = await supabase.from("rsvps").insert(row);
   if (error) {
     console.error("[api/rsvp] insert:", error.message);

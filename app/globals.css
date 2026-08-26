@@ -1415,6 +1415,15 @@
     color: #fff;
     border-color: var(--color-teal);
   }
+  /* reception closed for this guest: visibly unavailable, not selectable */
+  .seg button.closed {
+    background: var(--color-ivory);
+    color: var(--color-muted);
+    border-style: dashed;
+    text-decoration: line-through;
+    cursor: not-allowed;
+    opacity: 0.65;
+  }
   .btn-gold {
     width: 100%;
     padding: 15px;
