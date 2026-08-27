@@ -1,10 +1,14 @@
 import { Monogram } from "@/components/ui/Monogram";
 import { Countdown } from "@/components/ui/Countdown";
 import { HeroPhotos } from "./HeroPhotos";
-import { splitCoupleNames, weddingDateParts } from "@/lib/format";
+import { splitCoupleNames } from "@/lib/format";
 import type { Photo } from "@/lib/types";
 
-/** Hero — monogram, tagline, names, date/location, live countdown. */
+// The wedding day. Drives the hero countdown even when the admin date field is
+// left blank (blank keeps the date text off the hero — the countdown stays).
+const WEDDING_ISO = "2026-10-23T11:00:00"; // 23 October 2026, 11:00am
+
+/** Hero — monogram, tagline, names, location, live countdown (no date text). */
 export function Hero({
   coupleNames,
   tagline,
@@ -21,8 +25,7 @@ export function Hero({
   featured?: Photo[];
 }) {
   const { first, second } = splitCoupleNames(coupleNames);
-  const date = weddingDateParts(targetIso);
-  const hasMeta = Boolean(date || location);
+  const countdownTarget = targetIso || WEDDING_ISO;
 
   return (
     <section className="hero" id="top">
@@ -41,20 +44,12 @@ export function Hero({
         {second && <span className="amp">&amp;</span>}
         {second}
       </h1>
-      {hasMeta && (
+      {location && (
         <div className="meta reveal">
-          {date && (
-            <>
-              <span>{date.weekday}</span>
-              <i />
-              <span>{date.long}</span>
-            </>
-          )}
-          {date && location && <i />}
-          {location && <span>{location}</span>}
+          <span>{location}</span>
         </div>
       )}
-      {date && <Countdown className="reveal" targetIso={targetIso} />}
+      <Countdown className="reveal" targetIso={countdownTarget} />
     </section>
   );
 }
