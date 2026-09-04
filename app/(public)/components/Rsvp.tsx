@@ -2,18 +2,24 @@
 
 import { useEffect, useState } from "react";
 import { SectionHead } from "@/components/ui/SectionHead";
+import {
+  RSVP_EVENTS,
+  type RsvpEventKey,
+  isAllEvents,
+  serializeEvents,
+} from "@/lib/rsvpEvents";
 
 type Attending = "yes" | "no";
-type Which = "traditional" | "wedding" | "reception" | "all";
 type Status = "idle" | "submitting" | "error";
 
-// Options closed to a guest once their name is on the reception "closed list".
-const RECEPTION_OPTIONS: Which[] = ["reception", "all"];
+const ALL_EVENTS: RsvpEventKey[] = RSVP_EVENTS.map((e) => e.key);
 
 export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
   const [fullName, setFullName] = useState("");
   const [attending, setAttending] = useState<Attending>("yes");
-  const [which, setWhich] = useState<Which | "">("all");
+  // Any combination of celebrations, not one or all — guests often come to the
+  // traditional and the reception but not the church service.
+  const [which, setWhich] = useState<RsvpEventKey[]>(ALL_EVENTS);
   // Set once the typed name matches the couple's private reception closed list.
   const [receptionClosed, setReceptionClosed] = useState(false);
   // Either the guest comes alone or they bring exactly one person, whose name
@@ -50,13 +56,15 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
     return () => clearTimeout(timer);
   }, [fullName]);
 
-  // If the reception closes on their name, drop any reception/"all" selection so
-  // they re-pick among the open celebrations.
+  // If the reception closes on their name, drop just that one and leave the
+  // rest of their choices standing. Returning prev untouched when there is
+  // nothing to remove keeps this from looping on its own update.
   useEffect(() => {
-    if (receptionClosed && (which === "reception" || which === "all")) {
-      setWhich("");
-    }
-  }, [receptionClosed, which]);
+    if (!receptionClosed) return;
+    setWhich((prev) =>
+      prev.includes("reception") ? prev.filter((k) => k !== "reception") : prev,
+    );
+  }, [receptionClosed]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -70,8 +78,8 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
       setStatus("error");
       return;
     }
-    if (attending === "yes" && which === "") {
-      setError("Please choose which celebration you'll attend.");
+    if (attending === "yes" && which.length === 0) {
+      setError("Please choose at least one celebration.");
       setStatus("error");
       return;
     }
@@ -85,7 +93,7 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
         body: JSON.stringify({
           full_name: fullName.trim(),
           attending: attending === "yes",
-          events_attending: which,
+          events_attending: serializeEvents(which),
           party_size: plusOne ? 2 : 1,
           guest_name: plusOne ? guestName.trim() : null,
           meal_preference: meal,
@@ -159,31 +167,45 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
             <div className="field">
               <label>Which celebrations?</label>
               <div className="seg">
-                {(
-                  [
-                    ["traditional", "Traditional"],
-                    ["wedding", "Wedding"],
-                    ["reception", "Reception"],
-                    ["all", "All"],
-                  ] as [Which, string][]
-                ).map(([key, label]) => {
-                  const closed =
-                    receptionClosed && RECEPTION_OPTIONS.includes(key);
+                {RSVP_EVENTS.map(({ key, label }) => {
+                  const on = which.includes(key);
+                  const closed = receptionClosed && key === "reception";
                   return (
                     <button
                       key={key}
                       type="button"
-                      className={`${which === key ? "on" : ""}${closed ? " closed" : ""}`}
+                      className={`${on ? "on" : ""}${closed ? " closed" : ""}`}
+                      aria-pressed={on}
                       aria-disabled={closed}
                       onClick={() => {
                         if (closed) return; // message below explains why
-                        setWhich(key);
+                        setWhich((prev) =>
+                          on
+                            ? prev.filter((k) => k !== key)
+                            : ALL_EVENTS.filter(
+                                (k) => k === key || prev.includes(k),
+                              ),
+                        );
                       }}
                     >
                       {label}
                     </button>
                   );
                 })}
+                {/* a shortcut, not a fourth celebration — it ticks them all,
+                    which is exactly why the closed list has to shut it too */}
+                <button
+                  type="button"
+                  className={`${isAllEvents(which) ? "on" : ""}${receptionClosed ? " closed" : ""}`}
+                  aria-pressed={isAllEvents(which)}
+                  aria-disabled={receptionClosed}
+                  onClick={() => {
+                    if (receptionClosed) return;
+                    setWhich(ALL_EVENTS);
+                  }}
+                >
+                  All
+                </button>
               </div>
               {receptionClosed ? (
                 <p

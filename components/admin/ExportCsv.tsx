@@ -2,6 +2,7 @@
 
 import type { RsvpRow } from "@/lib/admin/rsvpTypes";
 import { expandToPeople, type RsvpPerson } from "@/lib/admin/rsvpPeople";
+import { eventsLabel } from "@/lib/rsvpEvents";
 
 /**
  * One line per person, not per submission — a guest who brings a +1 exports as
@@ -15,7 +16,7 @@ const COLUMNS: { label: string; value: (p: RsvpPerson) => unknown }[] = [
   { label: "Guest of", value: (p) => p.broughtBy ?? "" },
   { label: "Email", value: (p) => (p.isPlusOne ? "" : p.rsvp.email) },
   { label: "Attending", value: (p) => p.rsvp.attending },
-  { label: "Events", value: (p) => p.rsvp.events_attending },
+  { label: "Events", value: (p) => eventsLabel(p.rsvp.events_attending) },
   { label: "Party size", value: (p) => (p.isPlusOne ? "" : (p.rsvp.party_size ?? 1)) },
   { label: "Meal", value: (p) => p.rsvp.meal_preference },
   { label: "Message", value: (p) => (p.isPlusOne ? "" : p.rsvp.message) },

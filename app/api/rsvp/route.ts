@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { eventsLabel, parseEvents, serializeEvents } from "@/lib/rsvpEvents";
 
 interface RsvpInput {
   full_name: string;
@@ -11,13 +12,6 @@ interface RsvpInput {
   meal_preference: string | null;
   message: string | null;
 }
-
-const EVENT_LABEL: Record<string, string> = {
-  traditional: "Traditional",
-  wedding: "Wedding",
-  reception: "Reception",
-  all: "All celebrations",
-};
 
 /**
  * Public RSVP endpoint: saves the RSVP (RLS allows anon insert) and, if
@@ -45,7 +39,11 @@ export async function POST(request: Request) {
     full_name: fullName,
     email: body.email ? String(body.email).trim() : null,
     attending: Boolean(body.attending),
-    events_attending: body.events_attending ? String(body.events_attending) : null,
+    // re-canonicalised here so the column never holds anything parseEvents
+    // cannot read back, whatever the client posted
+    events_attending: serializeEvents(
+      String(body.events_attending ?? "").split(","),
+    ),
     party_size: guestName ? 2 : 1,
     guest_name: guestName || null,
     meal_preference: body.meal_preference ? String(body.meal_preference) : null,
@@ -54,9 +52,11 @@ export async function POST(request: Request) {
 
   const supabase = await createClient();
 
-  // Reception "closed list": a blocked name can't book the reception or "all".
+  // Reception "closed list": a blocked name can't book the reception.
   // Backstop for the form's own guard — blocks crafted/JS-off submissions too.
-  if (row.events_attending === "reception" || row.events_attending === "all") {
+  // Must go through parseEvents: events_attending is a list now, so comparing
+  // the whole string would let "traditional,reception" walk straight past.
+  if (parseEvents(row.events_attending).includes("reception")) {
     const { data: blocked } = await supabase.rpc("reception_blocked", {
       check_name: fullName,
     });
@@ -93,7 +93,7 @@ async function notify(row: RsvpInput) {
   const rows: [string, string][] = [
     ["Name", row.full_name],
     ["Attending", row.attending ? "Yes 🎉" : "No"],
-    ["Celebrations", row.events_attending ? (EVENT_LABEL[row.events_attending] ?? row.events_attending) : "—"],
+    ["Celebrations", eventsLabel(row.events_attending)],
     ["Guests", row.guest_name ? `2 — with ${row.guest_name}` : "Just them"],
     ["Meal", row.meal_preference ?? "—"],
     ["Message", row.message ?? "—"],

@@ -3,6 +3,7 @@ import { ExportCsv } from "@/components/admin/ExportCsv";
 import type { RsvpRow } from "@/lib/admin/rsvpTypes";
 import { expandToPeople, headCount } from "@/lib/admin/rsvpPeople";
 import { DeleteRsvp } from "@/components/admin/DeleteRsvp";
+import { eventsLabel } from "@/lib/rsvpEvents";
 
 function fmtDate(iso: string): string {
   const d = new Date(iso);
@@ -74,7 +75,7 @@ export default async function RsvpsPage() {
                       {p.isPlusOne ? "—" : (r.email ?? "—")}
                     </td>
                     <td className="px-4 py-3">{r.attending ? "Yes" : "No"}</td>
-                    <td className="px-4 py-3 capitalize">{r.events_attending ?? "—"}</td>
+                    <td className="px-4 py-3">{eventsLabel(r.events_attending)}</td>
                     <td className="px-4 py-3">{p.isPlusOne ? "—" : (r.party_size ?? 1)}</td>
                     <td className="px-4 py-3 whitespace-nowrap">{r.meal_preference ?? "—"}</td>
                     <td className="px-4 py-3 max-w-xs text-muted">
