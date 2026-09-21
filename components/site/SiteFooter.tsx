@@ -3,6 +3,7 @@ import { getSettings } from "@/lib/queries";
 import { publicImageUrl } from "@/lib/storage";
 import { weddingDateParts } from "@/lib/format";
 import { isSectionVisible } from "@/lib/sections";
+import { isMaintenance } from "@/lib/maintenance";
 
 // The footer's "Explore" links mirror the top nav's routes (hash sections on
 // the single public page). Sections the couple has hidden are filtered out
@@ -30,11 +31,15 @@ export async function SiteFooter() {
     : undefined;
 
   // Drop links to sections hidden from the public site (matches the nav).
-  const hidden = [
-    !isSectionVisible(s, "hotels") && "#travel",
-    !isSectionVisible(s, "registry") && "#registry",
-    !isSectionVisible(s, "faq") && "#faq",
-  ].filter(Boolean) as string[];
+  // During maintenance every hash section is database-backed and absent, so the
+  // whole Explore list goes rather than point at nothing. See lib/maintenance.
+  const hidden = isMaintenance()
+    ? FOOTER_LINKS.map(([href]) => href)
+    : ([
+        !isSectionVisible(s, "hotels") && "#travel",
+        !isSectionVisible(s, "registry") && "#registry",
+        !isSectionVisible(s, "faq") && "#faq",
+      ].filter(Boolean) as string[]);
   const links = FOOTER_LINKS.filter(([href]) => !hidden.includes(href));
 
   return (
@@ -48,17 +53,19 @@ export async function SiteFooter() {
             <div className="footer-tag">{hashtag}</div>
           </div>
 
-          {/* Explore */}
-          <nav className="footer-col footer-explore" aria-label="Footer">
-            <h2 className="footer-head">Explore</h2>
-            <ul className="footer-links">
-              {links.map(([href, label]) => (
-                <li key={href}>
-                  <a href={href}>{label}</a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          {/* Explore — omitted entirely when there is nothing left to link to */}
+          {links.length > 0 && (
+            <nav className="footer-col footer-explore" aria-label="Footer">
+              <h2 className="footer-head">Explore</h2>
+              <ul className="footer-links">
+                {links.map(([href, label]) => (
+                  <li key={href}>
+                    <a href={href}>{label}</a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
 
           {/* The Day */}
           <div className="footer-col footer-day">

@@ -8,13 +8,22 @@ import {
   isAllEvents,
   serializeEvents,
 } from "@/lib/rsvpEvents";
+import { MAINTENANCE_BACK_ON } from "@/lib/maintenance";
 
 type Attending = "yes" | "no";
 type Status = "idle" | "submitting" | "error";
 
 const ALL_EVENTS: RsvpEventKey[] = RSVP_EVENTS.map((e) => e.key);
 
-export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
+export function Rsvp({
+  deadlineNote,
+  closed = false,
+}: {
+  deadlineNote?: string;
+  // Maintenance: the database can't accept writes, so the form is replaced by
+  // a note. Without this a guest fills the whole thing in and gets an error.
+  closed?: boolean;
+}) {
   const [fullName, setFullName] = useState("");
   const [attending, setAttending] = useState<Attending>("yes");
   // Any combination of celebrations, not one or all — guests often come to the
@@ -119,7 +128,18 @@ export function Rsvp({ deadlineNote }: { deadlineNote?: string }) {
             "Kindly respond so we can prepare to celebrate with you."}
         </SectionHead>
 
-        {done ? (
+        {closed ? (
+          <div className="rsvp-box reveal maint-closed">
+            <p className="maint-eyebrow">RSVP reopens {MAINTENANCE_BACK_ON}</p>
+            <p className="maint-body">
+              We&rsquo;re carrying out some scheduled maintenance, so we
+              can&rsquo;t take responses just now. Please come back on{" "}
+              <strong>{MAINTENANCE_BACK_ON}</strong> — we&rsquo;d love to hear
+              from you then.
+            </p>
+            <p className="maint-assure">Our wedding dates have not changed.</p>
+          </div>
+        ) : done ? (
           <div className="rsvp-box reveal" style={{ textAlign: "center" }}>
             <h3 style={{ color: "var(--color-burgundy)", fontSize: "1.9rem" }}>
               Thank you{fullName.trim() ? `, ${fullName.trim().split(" ")[0]}` : ""}!

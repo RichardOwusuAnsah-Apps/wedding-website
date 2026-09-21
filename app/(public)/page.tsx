@@ -13,6 +13,7 @@ import { Faq } from "./components/Faq";
 import { ThreadDivider } from "@/components/ui/ThreadDivider";
 import { IntroReveal } from "@/components/site/IntroReveal";
 import { isSectionVisible } from "@/lib/sections";
+import { isMaintenance } from "@/lib/maintenance";
 import { publicImageUrl, renderImageUrl } from "@/lib/storage";
 import {
   getApprovedGuestbook,
@@ -78,6 +79,13 @@ export default async function Home() {
     ? `Kindly respond by ${formatDate(settings.rsvp_deadline)} so we can prepare to celebrate with you.`
     : undefined;
 
+  // While the database is unreachable every query returns empty, which would
+  // leave the page a run of headings with nothing under them. Hide a section
+  // rather than show it hollow. Outside the maintenance window nothing changes:
+  // each section keeps its own empty state.
+  const maintenance = isMaintenance();
+  const filled = (items: readonly unknown[]) => items.length > 0 || !maintenance;
+
   // Photos flung at the viewer during the cinematic intro (uses the gallery).
   // Small resized WebP via Supabase's transformer (originals here are 30MB+),
   // with the original as a last-resort fallback.
@@ -103,33 +111,49 @@ export default async function Home() {
       />
       <ThreadDivider className="reveal" />
 
-      <Story chapters={chapters} />
-      <ThreadDivider className="reveal" />
+      {filled(chapters) && (
+        <>
+          <Story chapters={chapters} />
+          <ThreadDivider className="reveal" />
+        </>
+      )}
 
-      <Celebrations events={events} />
-      <ThreadDivider className="reveal" />
+      {filled(events) && (
+        <>
+          <Celebrations events={events} />
+          <ThreadDivider className="reveal" />
+        </>
+      )}
 
-      <Party members={party} />
-      <Gallery photos={preWedding} />
-      <ThreadDivider className="reveal" />
+      {filled(party) && <Party members={party} />}
+      {filled(preWedding) && (
+        <>
+          <Gallery photos={preWedding} />
+          <ThreadDivider className="reveal" />
+        </>
+      )}
 
-      {isSectionVisible(settings, "hotels") && (
+      {isSectionVisible(settings, "hotels") && filled(hotels) && (
         <>
           <Travel hotels={hotels} />
           <ThreadDivider className="reveal" />
         </>
       )}
 
-      {isSectionVisible(settings, "vendors") && <Vendors vendors={vendors} />}
-      <Rsvp deadlineNote={deadlineNote} />
+      {isSectionVisible(settings, "vendors") && filled(vendors) && (
+        <Vendors vendors={vendors} />
+      )}
+      <Rsvp deadlineNote={deadlineNote} closed={maintenance} />
       <ThreadDivider className="reveal" />
 
-      {isSectionVisible(settings, "registry") && (
+      {isSectionVisible(settings, "registry") && filled(registry) && (
         <Registry items={registry} note={settings.registry_note} />
       )}
-      <AfterWedding weddingDate={weddingDate} photos={postWedding} />
-      <Guestbook wishes={wishes} />
-      {isSectionVisible(settings, "faq") && <Faq faqs={faqs} />}
+      {!maintenance && (
+        <AfterWedding weddingDate={weddingDate} photos={postWedding} />
+      )}
+      {filled(wishes) && <Guestbook wishes={wishes} />}
+      {isSectionVisible(settings, "faq") && filled(faqs) && <Faq faqs={faqs} />}
     </>
   );
 }

@@ -2316,3 +2316,55 @@
     text-align: left;
   }
 }
+
+/* --- Temporary maintenance notice (see lib/maintenance.ts) ---------------- */
+@layer components {
+  .maint {
+    background: var(--color-sand);
+    border-bottom: 1px solid var(--color-line);
+    padding: 26px 0 24px;
+    text-align: center;
+  }
+  .maint-eyebrow {
+    font-family: var(--font-util);
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    margin-bottom: 10px;
+  }
+  .maint-body {
+    max-width: 560px;
+    margin: 0 auto;
+    color: var(--color-ink);
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+  .maint-body strong {
+    color: var(--color-burgundy);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .maint-assure {
+    margin-top: 8px;
+    color: var(--color-muted);
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+  /* Same words inside the RSVP card, where the form would have been. */
+  .maint-closed {
+    text-align: center;
+  }
+  .maint-closed .maint-eyebrow {
+    color: var(--color-burgundy);
+  }
+}
+
+@media (max-width: 560px) {
+  .maint {
+    padding: 20px 0 18px;
+  }
+  .maint-body {
+    font-size: 0.95rem;
+  }
+}
