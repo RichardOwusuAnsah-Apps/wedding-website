@@ -54,6 +54,21 @@ export function IntroReveal({ images }: { images: IntroImage[] }) {
 
   // Decided once, on the client, before any photo is mounted.
   useEffect(() => {
+    // A full load starts at the top of the page. The intro used to enforce
+    // this as a side effect — it held `body { overflow: hidden }` while the
+    // browser tried to restore the previous scroll position, so the restore
+    // silently failed and the guest landed on the hero. Now that a repeat
+    // visit skips the intro, the restore succeeds and a refresh drops the
+    // guest back into whichever section they were reading. Say it outright
+    // instead of relying on the overlay, and leave /#section arrivals alone
+    // for HashLanding to place.
+    if (!window.location.hash) {
+      try {
+        history.scrollRestoration = "manual";
+      } catch {}
+      window.scrollTo(0, 0);
+    }
+
     if (pics.length === 0) {
       setGone(true);
       return;
