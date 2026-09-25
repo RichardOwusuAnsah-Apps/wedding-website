@@ -1,4 +1,5 @@
 import { SectionHead } from "@/components/ui/SectionHead";
+import { publicImageUrl } from "@/lib/storage";
 import type { Hotel } from "@/lib/types";
 
 /**
@@ -14,7 +15,14 @@ function mapsUrl(h: Hotel): string | null {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }
 
-export function Travel({ hotels }: { hotels: Hotel[] }) {
+export function Travel({
+  hotels,
+  photoIds,
+}: {
+  hotels: Hotel[];
+  /** Hotel ids that have a picture at gallery/hotels/<id>.webp. */
+  photoIds?: Set<string>;
+}) {
   return (
     <section id="travel">
       <div className="wrap">
@@ -27,20 +35,31 @@ export function Travel({ hotels }: { hotels: Hotel[] }) {
             const detail = [h.address, h.notes].filter(Boolean).join(" · ");
             const isGettingHere = (h.tier ?? "").toLowerCase() === "getting here";
             const maps = mapsUrl(h);
+            const photo = photoIds?.has(h.id)
+              ? publicImageUrl("gallery", `hotels/${h.id}.webp`)
+              : null;
+            // Already stored at display size, so it is served straight from
+            // storage rather than through a resize.
+            const panel = photo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className="map-photo" src={photo} alt="" loading="lazy" />
+            ) : null;
             return (
               <div className="card reveal" key={h.id}>
                 {/* The map panel is the big target — a guest on a phone taps
                     the picture, not the small link underneath. */}
                 {maps ? (
                   <a
-                    className="map map-link"
+                    className={`map map-link${photo ? " has-photo" : ""}`}
                     href={maps}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Open ${h.name} in Google Maps`}
-                  />
+                  >
+                    {panel}
+                  </a>
                 ) : (
-                  <div className="map" />
+                  <div className={`map${photo ? " has-photo" : ""}`}>{panel}</div>
                 )}
                 <div className="body">
                   {h.tier && <span className="role">{h.tier}</span>}

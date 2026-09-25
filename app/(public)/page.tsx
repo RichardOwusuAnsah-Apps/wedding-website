@@ -20,6 +20,7 @@ import {
   getEvents,
   getFaqs,
   getFeaturedPhotos,
+  getHotelPhotoIds,
   getHotels,
   getPhotos,
   getRegistryItems,
@@ -48,6 +49,7 @@ export default async function Home() {
     party,
     preWedding,
     hotels,
+    hotelPhotoIds,
     vendors,
     registry,
     postWedding,
@@ -61,6 +63,7 @@ export default async function Home() {
     getWeddingParty(),
     getPhotos("pre_wedding"),
     getHotels(),
+    getHotelPhotoIds(),
     getVendors(),
     getRegistryItems(),
     getPhotos("post_wedding"),
@@ -135,7 +138,7 @@ export default async function Home() {
 
       {isSectionVisible(settings, "hotels") && filled(hotels) && (
         <>
-          <Travel hotels={hotels} />
+          <Travel hotels={hotels} photoIds={hotelPhotoIds} />
           <ThreadDivider className="reveal" />
         </>
       )}

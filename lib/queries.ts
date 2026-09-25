@@ -54,6 +54,31 @@ export const getEvents = () => selectAll<EventRow>("events");
 export const getWeddingParty = () => selectAll<PartyMember>("wedding_party");
 export const getVenues = () => selectAll<Venue>("venues");
 export const getHotels = () => selectAll<Hotel>("hotels");
+
+/**
+ * Which hotels have a photo, as a set of hotel ids.
+ *
+ * The hotels table has no photo column, so a hotel's picture is stored by
+ * convention at `gallery/hotels/<hotel id>.webp`. Listing the folder is one
+ * cheap metadata call and means a hotel without a picture renders its plain
+ * panel instead of a broken image. If a photo_path column is ever added,
+ * this can go and the path can come off the row.
+ */
+export async function getHotelPhotoIds(): Promise<Set<string>> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.storage
+    .from("gallery")
+    .list("hotels", { limit: 200 });
+  if (error) {
+    console.error("[queries] hotel photos:", error.message);
+    return new Set();
+  }
+  return new Set(
+    (data ?? [])
+      .filter((f) => f.id !== null && f.name.endsWith(".webp"))
+      .map((f) => f.name.replace(/\.webp$/, "")),
+  );
+}
 export const getFamilyGroups = () => selectAll<FamilyGroup>("family_groups");
 export const getVendors = () => selectAll<Vendor>("vendors");
 export const getRegistryItems = () =>
