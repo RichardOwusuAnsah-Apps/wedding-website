@@ -1,6 +1,6 @@
 import { SectionHead } from "@/components/ui/SectionHead";
 import { FramedPhoto } from "@/components/site/FramedPhoto";
-import { framedPhotoUrl } from "@/lib/storage";
+import { publicImageUrl } from "@/lib/storage";
 import type { EventRow } from "@/lib/types";
 
 function DetailRow({ label, value }: { label: string; value: string | null }) {
@@ -38,7 +38,7 @@ export function Celebrations({ events }: { events: EventRow[] }) {
                 {hasPhoto ? (
                   <div className="cele-photo">
                     <FramedPhoto
-                      src={framedPhotoUrl("gallery", e.photo_path!, 384)}
+                      src={publicImageUrl("gallery", e.photo_path!)}
                       alt={e.title}
                       crop={e}
                       sizePx={384}

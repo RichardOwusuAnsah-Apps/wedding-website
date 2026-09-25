@@ -37,23 +37,6 @@ export function renderImageUrl(
   return `${base}/storage/v1/render/image/public/${bucket}/${path}?${params.toString()}`;
 }
 
-/**
- * Source for a FramedPhoto displayed at `sizePx` CSS pixels. Resized to 2x for
- * retina and deliberately given no height, so the aspect ratio survives and
- * FramedPhoto's focal-point crop still lines up.
- *
- * Use this rather than publicImageUrl anywhere a photo is shown in a fixed-size
- * frame: the originals are the full uploads, and serving one into a 384px slot
- * cost up to 437KB apiece against the storage egress quota.
- */
-export function framedPhotoUrl(
-  bucket: string,
-  path: string,
-  sizePx: number,
-): string {
-  return renderImageUrl(bucket, path, { width: sizePx * 2, quality: 65 });
-}
-
 /** Initials fallback for a missing portrait (e.g. "Kwame Boateng" -> "KB"). */
 export function initials(name: string): string {
   return name
