@@ -2,12 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { Photo } from "@/lib/types";
-import { publicImageUrl, optimizedImageUrl } from "@/lib/storage";
+import { framedPhotoUrl } from "@/lib/storage";
 import { FramedPhoto } from "@/components/site/FramedPhoto";
 
 const SLOTS = ["hp1", "hp2", "hp3", "hp4"] as const;
 const ROTATE_MS = 20000;
 const SLOT_PX = 384;
+
+// Preload and display must build the SAME url or each photo is fetched twice.
+const heroPhotoUrl = (path: string) =>
+  framedPhotoUrl("gallery", path, SLOT_PX);
 
 /**
  * Four tilted "hanging" hero frames. When more than four photos are featured
@@ -33,10 +37,7 @@ export function HeroPhotos({ photos }: { photos: Photo[] }) {
     const next = photos[(tick + SLOTS.length) % n];
     if (next) {
       const img = new window.Image();
-      img.src = optimizedImageUrl(
-        publicImageUrl("gallery", next.storage_path),
-        SLOT_PX,
-      );
+      img.src = heroPhotoUrl(next.storage_path);
     }
   }, [rotates, tick, photos, n]);
 
@@ -96,7 +97,7 @@ function HeroSlotPhoto({ photo }: { photo: Photo }) {
           }
         >
           <FramedPhoto
-            src={publicImageUrl("gallery", l.photo.storage_path)}
+            src={heroPhotoUrl(l.photo.storage_path)}
             alt=""
             crop={l.photo}
             sizePx={SLOT_PX}
