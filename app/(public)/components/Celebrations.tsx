@@ -75,6 +75,22 @@ export function Celebrations({ events }: { events: EventRow[] }) {
                     </div>
                   )}
                   <DetailRow label="Dress Code" value={e.attire} />
+                  {/* The order of service lives at /trad-program, a static page
+                      outside the CMS. Matched on the title the same way the
+                      reception's adults-only note is. */}
+                  {e.title?.toLowerCase().includes("traditional") && (
+                    <div>
+                      <b>Programme</b>
+                      <a
+                        className="cele-venue"
+                        href="/trad-program"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Order of service <span aria-hidden>→</span>
+                      </a>
+                    </div>
+                  )}
                   {e.title?.toLowerCase().includes("reception") && (
                     <p
                       style={{
