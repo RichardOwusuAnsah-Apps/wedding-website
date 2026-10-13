@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       { source: "/wedding-invite", destination: "/wedding-invite/index.html" },
+      { source: "/trad-program", destination: "/trad-program/index.html" },
     ];
   },
 };
