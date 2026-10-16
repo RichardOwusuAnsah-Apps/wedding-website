@@ -1,6 +1,7 @@
 import { SectionHead } from "@/components/ui/SectionHead";
 import { FramedPhoto } from "@/components/site/FramedPhoto";
 import { publicImageUrl } from "@/lib/storage";
+import { programmeForEvent } from "@/lib/programmes";
 import type { EventRow } from "@/lib/types";
 
 function DetailRow({ label, value }: { label: string; value: string | null }) {
@@ -33,6 +34,7 @@ export function Celebrations({ events }: { events: EventRow[] }) {
         <div className="cele-grid">
           {events.map((e) => {
             const hasPhoto = Boolean(e.photo_path);
+            const programme = programmeForEvent(e.title);
             return (
               <div className={`cele ${colorClass(e.side_color)} reveal`} key={e.id}>
                 {hasPhoto ? (
@@ -75,19 +77,20 @@ export function Celebrations({ events }: { events: EventRow[] }) {
                     </div>
                   )}
                   <DetailRow label="Dress Code" value={e.attire} />
-                  {/* The programme outline lives at /trad-program, a static page
-                      outside the CMS. Matched on the title the same way the
-                      reception's adults-only note is. */}
-                  {e.title?.toLowerCase().includes("traditional") && (
+                  {/* The programmes are static documents outside the CMS,
+                      matched to a celebration by title. The link always shows:
+                      before its ceremony it opens a page saying when the
+                      programme will be ready. */}
+                  {programme && (
                     <div>
                       <b>Programme</b>
                       <a
                         className="cele-venue"
-                        href="/trad-program"
+                        href={`/${programme.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Programme outline <span aria-hidden>→</span>
+                        {programme.linkLabel} <span aria-hidden>→</span>
                       </a>
                     </div>
                   )}

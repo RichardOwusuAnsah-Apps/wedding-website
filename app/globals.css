@@ -2432,3 +2432,73 @@
     transform: scale(1.04);
   }
 }
+
+/* ---- programme holding page (/trad-program, /wedding-program before time) ---- */
+.prog-soon {
+  display: flex;
+  align-items: center;
+  min-height: 70vh;
+  padding: 72px 0 96px;
+}
+.prog-soon .wrap {
+  max-width: var(--spacing-wrap);
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+}
+.prog-soon-card {
+  max-width: 620px;
+  margin: 0 auto;
+  text-align: center;
+  background: var(--color-sand);
+  border: 1px solid var(--color-line);
+  border-radius: 3px;
+  padding: 56px 32px 48px;
+}
+.prog-soon-eyebrow {
+  font-family: var(--font-util);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin-bottom: 18px;
+}
+.prog-soon-card h1 {
+  font-size: clamp(2rem, 6vw, 2.9rem);
+  color: var(--color-burgundy);
+  margin-bottom: 28px;
+}
+.prog-soon-lead {
+  font-family: var(--font-util);
+  font-size: 0.74rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin-bottom: 10px;
+}
+.prog-soon-when {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 4.4vw, 1.8rem);
+  line-height: 1.25;
+  color: var(--color-ink);
+  margin-bottom: 22px;
+}
+.prog-soon-note {
+  font-size: 0.95rem;
+  color: var(--color-muted);
+  max-width: 42ch;
+  margin: 0 auto 32px;
+}
+.prog-soon-back {
+  display: inline-block;
+  font-family: var(--font-util);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-burgundy);
+  border-bottom: 1px solid var(--color-gold);
+  padding-bottom: 3px;
+}
+.prog-soon-back:hover {
+  color: var(--color-gold);
+}
