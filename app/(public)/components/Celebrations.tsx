@@ -1,7 +1,7 @@
 import { SectionHead } from "@/components/ui/SectionHead";
 import { FramedPhoto } from "@/components/site/FramedPhoto";
 import { publicImageUrl } from "@/lib/storage";
-import { programmeForEvent } from "@/lib/programmes";
+import { programForEvent } from "@/lib/programs";
 import type { EventRow } from "@/lib/types";
 
 function DetailRow({ label, value }: { label: string; value: string | null }) {
@@ -34,7 +34,7 @@ export function Celebrations({ events }: { events: EventRow[] }) {
         <div className="cele-grid">
           {events.map((e) => {
             const hasPhoto = Boolean(e.photo_path);
-            const programme = programmeForEvent(e.title);
+            const program = programForEvent(e.title);
             return (
               <div className={`cele ${colorClass(e.side_color)} reveal`} key={e.id}>
                 {hasPhoto ? (
@@ -77,20 +77,20 @@ export function Celebrations({ events }: { events: EventRow[] }) {
                     </div>
                   )}
                   <DetailRow label="Dress Code" value={e.attire} />
-                  {/* The programmes are static documents outside the CMS,
+                  {/* The programs are static documents outside the CMS,
                       matched to a celebration by title. The link always shows:
                       before its ceremony it opens a page saying when the
-                      programme will be ready. */}
-                  {programme && (
+                      program will be ready. */}
+                  {program && (
                     <div>
-                      <b>Programme</b>
+                      <b>Program</b>
                       <a
                         className="cele-venue"
-                        href={`/${programme.slug}`}
+                        href={`/${program.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {programme.linkLabel} <span aria-hidden>→</span>
+                        {program.linkLabel} <span aria-hidden>→</span>
                       </a>
                     </div>
                   )}

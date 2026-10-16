@@ -1,17 +1,17 @@
 /**
- * The two programme documents and when each one opens to guests.
+ * The two program documents and when each one opens to guests.
  *
  * Both live as static files under `public/`, reached through the clean urls in
- * next.config.ts. Until a programme's moment arrives the proxy sends guests to
+ * next.config.ts. Until a program's moment arrives the proxy sends guests to
  * a holding page instead; a signed-in admin always gets through, so the
- * programme can be checked before anyone else sees it.
+ * program can be checked before anyone else sees it.
  *
  * The urls are printed on qr codes, so the slugs are permanent. Swapping the
  * document behind one (the white wedding is a placeholder pdf for now) means
  * changing only the rewrite destination in next.config.ts.
  */
 
-export type Programme = {
+export type Program = {
   /** Path segment, and the url the qr code points at: /<slug>. */
   readonly slug: string;
   /** How the link reads on the celebration card. */
@@ -28,7 +28,7 @@ export type Programme = {
   readonly files: readonly string[];
 };
 
-export const PROGRAMMES: readonly Programme[] = [
+export const PROGRAMS: readonly Program[] = [
   {
     slug: "trad-program",
     linkLabel: "Traditional Marriage Program",
@@ -51,29 +51,29 @@ export const PROGRAMMES: readonly Programme[] = [
   },
 ];
 
-export function programmeBySlug(slug: string): Programme | undefined {
-  return PROGRAMMES.find((p) => p.slug === slug);
+export function programBySlug(slug: string): Program | undefined {
+  return PROGRAMS.find((p) => p.slug === slug);
 }
 
-/** True once the programme's moment has passed. */
-export function isProgrammeOpen(p: Programme, now: Date = new Date()): boolean {
+/** True once the program's moment has passed. */
+export function isProgramOpen(p: Program, now: Date = new Date()): boolean {
   return now.getTime() >= new Date(p.opensAt).getTime();
 }
 
 /**
- * The programme a celebration card links to, matched on its title.
+ * The program a celebration card links to, matched on its title.
  *
  * Matched on "white" rather than "wedding" on purpose: the reception is titled
- * "Wedding Reception" and must not pick up the white wedding's programme.
+ * "Wedding Reception" and must not pick up the white wedding's program.
  */
-export function programmeForEvent(title: string | null): Programme | undefined {
+export function programForEvent(title: string | null): Program | undefined {
   const t = (title ?? "").toLowerCase();
-  if (t.includes("traditional")) return programmeBySlug("trad-program");
-  if (t.includes("white")) return programmeBySlug("wedding-program");
+  if (t.includes("traditional")) return programBySlug("trad-program");
+  if (t.includes("white")) return programBySlug("wedding-program");
   return undefined;
 }
 
 /** Clean url and underlying file paths, i.e. everything the gate must cover. */
-export function gatedPaths(p: Programme): string[] {
+export function gatedPaths(p: Program): string[] {
   return [`/${p.slug}`, ...p.files];
 }

@@ -1,12 +1,12 @@
-import { PROGRAMMES, isProgrammeOpen } from "@/lib/programmes";
+import { PROGRAMS, isProgramOpen } from "@/lib/programs";
 
 /**
- * The two programme documents, openable here at any time.
+ * The two program documents, openable here at any time.
  *
  * Guests are held at a "opens on ..." page until each ceremony's moment; a
  * signed-in admin is let straight through by the proxy, so these links show
  * the real document even before it is public. That is the way to proof a
- * programme before anyone else can read it.
+ * program before anyone else can read it.
  */
 
 export const dynamic = "force-dynamic";
@@ -17,17 +17,17 @@ export default function Page() {
   return (
     <div>
       <h1 className="font-display text-[1.8rem] text-burgundy mb-1">
-        Programmes
+        Programs
       </h1>
       <p className="text-muted text-[0.95rem] mb-7 max-w-[62ch]">
-        Each programme stays closed to guests until its ceremony. You can open
+        Each program stays closed to guests until its ceremony. You can open
         them here at any time — you are signed in, so you are let straight
         through.
       </p>
 
       <div className="flex flex-col gap-4">
-        {PROGRAMMES.map((p) => {
-          const open = isProgrammeOpen(p, now);
+        {PROGRAMS.map((p) => {
+          const open = isProgramOpen(p, now);
           return (
             <div
               key={p.slug}
@@ -70,7 +70,7 @@ export default function Page() {
                 rel="noopener noreferrer"
                 className="inline-block mt-4 font-util text-[0.68rem] tracking-[0.16em] uppercase border border-line rounded-[2px] px-3 py-2 text-burgundy hover:bg-sand transition"
               >
-                Open programme &#8599;
+                Open program &#8599;
               </a>
             </div>
           );
