@@ -120,5 +120,7 @@ export const config = {
     "/wedding-program",
     "/wedding-program/program.pdf",
     "/wedding-program/index.html",
+    "/reception-program-and-menu",
+    "/reception-program-and-menu/index.html",
   ],
 };

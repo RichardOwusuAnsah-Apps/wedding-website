@@ -21,6 +21,21 @@ const nextConfig: NextConfig = {
       // destination changes (to /wedding-program/index.html) and every code
       // already in circulation keeps working.
       { source: "/wedding-program", destination: "/wedding-program/program.pdf" },
+      {
+        source: "/reception-program-and-menu",
+        destination: "/reception-program-and-menu/index.html",
+      },
+    ];
+  },
+  async redirects() {
+    return [
+      // "recpetion" is an easy slip, and the url goes on printed cards where a
+      // typo cannot be taken back. Catch it rather than serve a 404.
+      {
+        source: "/recpetion-program-and-menu",
+        destination: "/reception-program-and-menu",
+        permanent: true,
+      },
     ];
   },
 };

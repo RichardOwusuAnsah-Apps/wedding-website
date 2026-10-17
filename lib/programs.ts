@@ -49,6 +49,15 @@ export const PROGRAMS: readonly Program[] = [
     // working across the swap without a second change here.
     files: ["/wedding-program/program.pdf", "/wedding-program/index.html"],
   },
+  {
+    slug: "reception-program-and-menu",
+    linkLabel: "Reception Program & Menu",
+    title: "Reception Program & Menu",
+    ceremony: "Wedding Reception",
+    opensAt: "2026-10-24T15:50:00-04:00",
+    opensLabel: "Saturday 24 October at 3:50 PM",
+    files: ["/reception-program-and-menu/index.html"],
+  },
 ];
 
 export function programBySlug(slug: string): Program | undefined {
@@ -70,6 +79,7 @@ export function programForEvent(title: string | null): Program | undefined {
   const t = (title ?? "").toLowerCase();
   if (t.includes("traditional")) return programBySlug("trad-program");
   if (t.includes("white")) return programBySlug("wedding-program");
+  if (t.includes("reception")) return programBySlug("reception-program-and-menu");
   return undefined;
 }
 
