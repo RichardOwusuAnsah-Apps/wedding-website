@@ -45,9 +45,7 @@ export const PROGRAMS: readonly Program[] = [
     ceremony: "White Wedding",
     opensAt: "2026-10-24T12:50:00-04:00",
     opensLabel: "Saturday 24 October at 12:50 PM",
-    // The pdf placeholder and the html that will replace it, so the gate keeps
-    // working across the swap without a second change here.
-    files: ["/wedding-program/program.pdf", "/wedding-program/index.html"],
+    files: ["/wedding-program/index.html"],
   },
   {
     slug: "reception-program-and-menu",

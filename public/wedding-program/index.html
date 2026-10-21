@@ -1,0 +1,34 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#1b2a24"><title>Richard &amp; Shulamite | Wedding Program</title><style>
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#1b2a24;-webkit-tap-highlight-color:transparent}
+.track{position:fixed;inset:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+.track::-webkit-scrollbar{display:none}
+.slide{flex:0 0 100%;height:100%;scroll-snap-align:center;scroll-snap-stop:always;display:flex;align-items:center;justify-content:center;padding:14px 14px 58px}
+.pgbox{position:relative;flex:none;box-shadow:0 12px 40px rgba(0,0,0,.45);background:#fff;overflow:hidden}
+.pgbox>img{display:block;width:100%;height:100%}
+.nav{position:fixed;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;border:1px solid rgba(214,168,74,.7);background:rgba(20,40,32,.72);color:#E9C77B;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;transition:opacity .25s;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.nav svg{width:22px;height:22px}
+.nav.prev{left:10px}.nav.next{right:10px}
+.nav[hidden]{display:flex;opacity:0;pointer-events:none}
+.bar{position:fixed;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;justify-content:center;gap:10px;z-index:5;font:500 12px/1 system-ui,sans-serif;color:#E9C77B;letter-spacing:.08em}
+.dots{display:flex;gap:8px}
+.dots button{width:9px;height:9px;padding:0;border-radius:50%;border:1px solid #E9C77B;background:transparent;cursor:pointer}
+.dots button.on{background:#E9C77B}
+.hint{position:fixed;left:50%;bottom:calc(40px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);color:#E9C77B;font:500 12px system-ui,sans-serif;letter-spacing:.08em;opacity:.9;transition:opacity .6s;z-index:5;white-space:nowrap}
+@media (min-width:900px){.nav{width:54px;height:54px}.nav.prev{left:28px}.nav.next{right:28px}}
+@page{size:letter;margin:0}
+@media print{html,body{height:auto;overflow:visible;background:none}.track{position:static;display:block;overflow:visible}.slide{display:block;padding:0;height:auto}.pgbox{width:8.5in!important;height:11in!important;box-shadow:none;page-break-after:always;break-after:page}.slide:last-child .pgbox{page-break-after:auto}.nav,.bar,.hint{display:none!important}}
+</style></head><body><main class="track"><section class="slide"><div class="pgbox"><img src="/wedding-program/img/ef923397bfcd.webp" alt="Cover"></div></section><section class="slide"><div class="pgbox"><img src="/wedding-program/img/e47b9d30d289.webp" alt="Order of Service"></div></section><section class="slide"><div class="pgbox"><img src="/wedding-program/img/974d600c8155.webp" alt="The Wedding Party"></div></section></main><button class="nav prev" aria-label="Previous page" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+<button class="nav next" aria-label="Next page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+<div class="hint">Swipe to see more</div>
+<div class="bar"><div class="dots"></div></div><script>(function(){
+var tr=document.querySelector('.track'),sl=[].slice.call(document.querySelectorAll('.slide')),pv=document.querySelector('.prev'),nx=document.querySelector('.next'),dots=document.querySelector('.dots'),hint=document.querySelector('.hint'),cur=0;
+sl.forEach(function(_,i){var b=document.createElement('button');b.setAttribute('aria-label','Page '+(i+1));b.onclick=function(){go(i)};dots.appendChild(b);});
+function fit(){sl.forEach(function(s){var b=s.querySelector('.pgbox');var cs=getComputedStyle(s);var aw=s.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight),ah=s.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);var k=Math.min(aw/816,ah/1056);b.style.width=816*k+'px';b.style.height=1056*k+'px';var sc=b.querySelector('.sc');if(sc)sc.style.transform='scale('+k+')';});tr.scrollLeft=cur*tr.clientWidth;}
+function upd(){cur=Math.round(tr.scrollLeft/tr.clientWidth);pv.hidden=cur<=0;nx.hidden=cur>=sl.length-1;[].forEach.call(dots.children,function(d,i){d.className=i===cur?'on':''});if(cur>0&&hint)hint.style.opacity=0;}
+function go(i){i=Math.max(0,Math.min(sl.length-1,i));tr.scrollTo({left:i*tr.clientWidth,behavior:'smooth'});}
+pv.onclick=function(){go(cur-1)};nx.onclick=function(){go(cur+1)};
+tr.addEventListener('scroll',function(){window.requestAnimationFrame(upd)},{passive:true});
+document.addEventListener('keydown',function(e){if(e.key==='ArrowRight')go(cur+1);if(e.key==='ArrowLeft')go(cur-1);});
+window.addEventListener('resize',fit);fit();upd();setTimeout(function(){if(hint)hint.style.opacity=0},4500);
+})();</script></body></html>

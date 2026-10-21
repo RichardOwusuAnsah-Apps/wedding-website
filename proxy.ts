@@ -118,7 +118,6 @@ export const config = {
     "/trad-program",
     "/trad-program/index.html",
     "/wedding-program",
-    "/wedding-program/program.pdf",
     "/wedding-program/index.html",
     "/reception-program-and-menu",
     "/reception-program-and-menu/index.html",

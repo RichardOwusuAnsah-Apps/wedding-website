@@ -16,11 +16,10 @@ const nextConfig: NextConfig = {
     return [
       { source: "/wedding-invite", destination: "/wedding-invite/index.html" },
       { source: "/trad-program", destination: "/trad-program/index.html" },
-      // The white wedding program. Printed on the QR code, so this source
-      // path is permanent — when the html program is ready, only the
-      // destination changes (to /wedding-program/index.html) and every code
-      // already in circulation keeps working.
-      { source: "/wedding-program", destination: "/wedding-program/program.pdf" },
+      // The white wedding program. Printed on the qr code, so this source
+      // path is permanent; only the destination behind it ever changes. It
+      // served a placeholder pdf until the html was ready.
+      { source: "/wedding-program", destination: "/wedding-program/index.html" },
       {
         source: "/reception-program-and-menu",
         destination: "/reception-program-and-menu/index.html",
